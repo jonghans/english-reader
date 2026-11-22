@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>영어 읽기·듣기 연습장</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans KR', 'sans-serif'],
+          },
+          colors: {
+            cream: {
+              50: '#FDFBF7',
+              100: '#F7F3EB',
+              200: '#EFE7D8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    input[type="range"] {
+      accent-color: #4f46e5;
+    }
+    @keyframes soundWave {
+      0%, 100% { transform: scaleY(0.35); }
+      50% { transform: scaleY(1); }
+    }
+    .wave-bar {
+      animation: soundWave 0.85s ease-in-out infinite;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+  </style>
+</head>
+<body class="bg-cream-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900 pb-44 sm:pb-36">
+
+  <!-- 상단 고정 헤더 -->
+  <header class="bg-white/90 backdrop-blur-md border-b border-cream-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-teal-500 flex items-center justify-center text-white shadow-sm shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+        <div class="truncate">
+          <p class="text-[11px] font-semibold text-teal-600 tracking-wide uppercase">English Shadowing Studio</p>
+          <h1 id="headerTitle" class="text-base sm:text-lg font-bold text-slate-900 truncate">A Difficult Decision</h1>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- 한글 해석 토글 -->
+        <button
+          id="headerTranslationBtn"
+          type="button"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100"
+          aria-pressed="true"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+          </svg>
+          <span id="headerTranslationLabel">해석 ON</span>
+        </button>
+
+        <!-- 새 지문 추가 버튼 -->
+        <button
+          id="openAddModalBtn"
+          type="button"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white shadow-sm transition-all"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>새 지문 추가</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 콘텐츠 -->
+  <main class="max-w-3xl mx-auto px-4 pt-5 space-y-5">
+
+    <!-- Web Speech API 미지원 경고 배너 -->
+    <div id="unsupportedAlert" class="hidden rounded-2xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800 flex items-start gap-3">
+      <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <div>
+        <p class="font-semibold">브라우저가 음성 합성을 지원하지 않습니다.</p>
+        <p class="mt-0.5 text-amber-700">Chrome, Safari, Edge 최신 버전에서 열어주시면 원어민 발음으로 들을 수 있습니다.</p>
+      </div>
+    </div>
+
+    <!-- 지문 선택 및 관리 카드 -->
+    <section class="bg-white rounded-2xl border border-cream-200 shadow-sm p-4 sm:p-5 space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <label for="passageSelect" class="text-sm font-bold text-slate-800 flex items-center gap-2">
+          <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+          학습 지문 선택
+        </label>
+        <span id="passageMetaBadge" class="text-xs font-medium text-slate-500 bg-cream-100 px-2.5 py-1 rounded-full">총 28문장</span>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+        <select
+          id="passageSelect"
+          class="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+        ></select>
+
+        <!-- 커스텀 지문 편집/삭제 버튼 (기본 프리셋일 때는 숨김) -->
+        <div id="customPassageActions" class="hidden flex items-center gap-2 shrink-0">
+          <button
+            id="editPassageBtn"
+            type="button"
+            class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            편집
+          </button>
+          <button
+            id="deletePassageBtn"
+            type="button"
+            class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100 transition"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            삭제
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 음성 & 학습 설정 패널 -->
+    <section class="bg-white rounded-2xl border border-cream-200 shadow-sm p-4 sm:p-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+          <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+          </svg>
+          음성 및 속도 설정
+        </h2>
+        <span id="voiceCountBadge" class="text-xs text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">음성 불러오는 중...</span>
+      </div>
+
+      <!-- 영어 음성 선택 -->
+      <div>
+        <label for="voiceSelect" class="block text-xs font-semibold text-slate-600 mb-1.5">영어 음성 (Voice)</label>
+        <select
+          id="voiceSelect"
+          class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+        >
+          <option value="">기본 영어 음성 (en-US)</option>
+        </select>
+      </div>
+
+      <!-- 슬라이더 2종 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <!-- 읽기 속도 -->
+        <div class="bg-cream-50 rounded-xl p-3.5 border border-cream-200/80">
+          <div class="flex items-center justify-between mb-2">
+            <label for="speedSlider" class="text-xs font-semibold text-slate-700">읽기 속도</label>
+            <span id="speedValue" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg">0.75x</span>
+          </div>
+          <input
+            id="speedSlider"
+            type="range"
+            min="0.5"
+            max="1.2"
+            step="0.05"
+            value="0.75"
+            class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer"
+          />
+          <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+            <span>0.5x (매우 느림)</span>
+            <span>0.85x</span>
+            <span>1.2x (빠름)</span>
+          </div>
+        </div>
+
+        <!-- 문장 간격 -->
+        <div class="bg-cream-50 rounded-xl p-3.5 border border-cream-200/80">
+          <div class="flex items-center justify-between mb-2">
+            <label for="intervalSlider" class="text-xs font-semibold text-slate-700">문장 간격 (따라 읽기)</label>
+            <span id="intervalValue" class="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-lg">1.5초</span>
+          </div>
+          <input
+            id="intervalSlider"
+            type="range"
+            min="0"
+            max="5"
+            step="0.5"
+            value="1.5"
+            class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer"
+          />
+          <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+            <span>0초 (바로)</span>
+            <span>2.5초</span>
+            <span>5초 (여유)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 옵션 토글 버튼 -->
+      <div class="flex flex-wrap items-center gap-2.5 pt-0.5">
+        <button
+          id="repeatToggleBtn"
+          type="button"
+          class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+          aria-pressed="false"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>한 문장 반복: <strong id="repeatStateText">OFF</strong></span>
+        </button>
+
+        <button
+          id="translationToggleBtn"
+          type="button"
+          class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100"
+          aria-pressed="true"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          <span>한글 해석 보기: <strong id="translationStateText">ON</strong></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 문장 카드 리스트 -->
+    <section aria-label="문장 목록">
+      <div id="sentencesContainer" class="space-y-2.5"></div>
+    </section>
+
+  </main>
+
+  <!-- 하단 고정 오디오 플레이어 바 -->
+  <div class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-8px_24px_rgba(15,23,42,0.08)]">
+    <!-- 따라 읽기 카운트다운 프로그레스 바 -->
+    <div class="w-full h-1.5 bg-slate-100 overflow-hidden">
+      <div id="pauseProgressBar" class="h-full bg-gradient-to-r from-indigo-500 to-teal-500 transition-all duration-100" style="width: 0%;"></div>
+    </div>
+
+    <div class="max-w-3xl mx-auto px-4 py-3">
+      <!-- 상단 상태 표시줄 -->
+      <div class="flex items-center justify-between text-xs mb-2.5 gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <span id="statusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold bg-slate-100 text-slate-600 shrink-0">
+            <span id="statusDot" class="w-2 h-2 rounded-full bg-slate-400"></span>
+            <span id="statusText">대기 중</span>
+          </span>
+          <span id="currentSentenceInfo" class="text-slate-500 font-medium truncate">문장 1 / 28</span>
+        </div>
+        <div id="countdownDisplay" class="font-semibold text-teal-600 hidden shrink-0">
+          따라 읽기: <span id="countdownSeconds">1.5</span>s...
+        </div>
+      </div>
+
+      <!-- 컨트롤 버튼 행 -->
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <!-- 이전 -->
+          <button
+            id="prevBtn"
+            type="button"
+            title="이전 문장"
+            class="p-2.5 sm:px-3 sm:py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 transition flex items-center gap-1 text-xs font-semibold"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span class="hidden sm:inline">이전</span>
+          </button>
+
+          <!-- 전체 재생 / 일시정지 -->
+          <button
+            id="playPauseBtn"
+            type="button"
+            class="px-4 sm:px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-semibold text-sm shadow-sm shadow-indigo-200 transition flex items-center gap-2"
+          >
+            <svg id="playIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <svg id="pauseIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+            </svg>
+            <span id="playPauseLabel">전체 재생</span>
+          </button>
+
+          <!-- 정지 -->
+          <button
+            id="stopBtn"
+            type="button"
+            title="정지"
+            class="p-2.5 sm:px-3 sm:py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 active:scale-95 text-slate-700 transition flex items-center gap-1 text-xs font-semibold"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <rect x="6" y="6" width="12" height="12" rx="2" />
+            </svg>
+            <span class="hidden sm:inline">정지</span>
+          </button>
+
+          <!-- 다음 -->
+          <button
+            id="nextBtn"
+            type="button"
+            title="다음 문장"
+            class="p-2.5 sm:px-3 sm:py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 transition flex items-center gap-1 text-xs font-semibold"
+          >
+            <span class="hidden sm:inline">다음</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <button
+            id="barRepeatBtn"
+            type="button"
+            title="한 문장 반복"
+            class="p-2.5 rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition"
+            aria-pressed="false"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </button>
+          <span id="barSpeedBadge" class="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-2 rounded-xl">
+            0.75x
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       모달 1: 새 지문 추가 / 편집 모달
+       ===================================================================== -->
+  <div id="passageModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden">
+      <!-- 모달 헤더 -->
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 id="modalTitle" class="text-lg font-bold text-slate-900">새 지문 추가</h3>
+        <button id="closeModalBtn" type="button" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- 모달 본문 -->
+      <div class="p-6 space-y-4 overflow-y-auto">
+        <!-- 지문 제목 -->
+        <div>
+          <label for="inputPassageTitle" class="block text-xs font-bold text-slate-700 mb-1.5">지문 제목</label>
+          <input
+            id="inputPassageTitle"
+            type="text"
+            placeholder="예: My Summer Vacation"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+          />
+        </div>
+
+        <!-- 영어 본문 입력 -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="inputPassageContent" class="text-xs font-bold text-slate-700">영어 지문 입력</label>
+            <span id="previewCountBadge" class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg">0문장 인식됨</span>
+          </div>
+          <textarea
+            id="inputPassageContent"
+            rows="9"
+            placeholder="영어 문단을 그대로 붙여넣거나, 한 줄에 한 문장씩 입력하세요.&#10;&#10;[한글 해석을 함께 넣고 싶다면]&#10;Hello, how are you? | 안녕하세요, 잘 지내시나요?&#10;I love reading books. | 저는 책 읽는 것을 좋아해요."
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm text-slate-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition resize-y"
+          ></textarea>
+        </div>
+
+        <!-- 입력 형식 안내 -->
+        <div class="rounded-xl bg-cream-50 border border-cream-200 p-3.5 text-xs text-slate-600 space-y-1.5 leading-relaxed">
+          <p class="font-bold text-slate-700">💡 두 가지 입력 방식을 모두 지원합니다</p>
+          <p><strong>1) 일반 영어 문단:</strong> 그대로 붙여넣으면 마침표(.), 물음표(?), 느낌표(!)와 따옴표를 인식해 자동으로 문장 단위로 나눕니다.</p>
+          <p><strong>2) 한글 해석 포함:</strong> <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 text-indigo-700">영어 문장 | 한글 해석</code> 형식으로 한 줄씩 입력하면 해석이 함께 저장됩니다.</p>
+        </div>
+
+        <!-- 에러 메시지 -->
+        <p id="modalErrorMsg" class="hidden text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-3.5 py-2.5"></p>
+      </div>
+
+      <!-- 모달 하단 버튼 -->
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2.5">
+        <button id="cancelModalBtn" type="button" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-200/70 transition">
+          취소
+        </button>
+        <button id="savePassageBtn" type="button" class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition">
+          저장하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       모달 2: 삭제 확인 모달 (confirm() 대체)
+       ===================================================================== -->
+  <div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-sm p-6 space-y-4">
+      <div class="w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-slate-900">지문을 삭제할까요?</h3>
+        <p id="deleteTargetName" class="text-sm text-slate-500 mt-1 leading-relaxed"></p>
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button id="cancelDeleteBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+          취소
+        </button>
+        <button id="confirmDeleteBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white transition">
+          삭제하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 -->
+  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-medium shadow-lg transition-all"></div>
+
+  <script>
+    // =========================================================================
+    // 1. 기본 프리셋 지문 데이터 ("A Difficult Decision" 28문장)
+    // =========================================================================
+    const PRESET_PASSAGE = {
+      id: "preset-a-difficult-decision",
+      title: "A Difficult Decision",
+      isPreset: true,
+      sentences: [
+        { en: "My best friend Paul and I were excited to go to the park after school.", ko: "나의 가장 친한 친구 폴과 나는 방과 후에 공원에 가게 되어 신이 났다." },
+        { en: "The park had a new fort.", ko: "그 공원에는 새로운 요새(놀이기구)가 있었다." },
+        { en: "The Parks Department let the kids choose what kind of equipment to build, and the fort got the most votes.", ko: "공원 관리국에서 아이들에게 어떤 놀이기구를 지을지 고르게 했고, 요새가 가장 많은 표를 받았다." },
+        { en: "After school, Mom and I met Paul and his dad at the park.", ko: "방과 후에 엄마와 나는 공원에서 폴과 폴의 아빠를 만났다." },
+        { en: "Paul and I raced to the top of the tower.", ko: "폴과 나는 탑 꼭대기까지 달리기 시합을 했다." },
+        { en: "\"I win. I'm the champion,\" I shouted.", ko: "\"내가 이겼어. 내가 챔피언이야,\" 내가 소리쳤다." },
+        { en: "\"Look, Paul! Someone left the newest GameMaster here. It's mine now!\"", ko: "\"봐, 폴! 누군가 최신형 게임마스터를 여기 두고 갔어. 이제 내 거야!\"" },
+        { en: "Paul raised his eyebrows and looked thoughtful.", ko: "폴은 눈썹을 치켜올리며 생각에 잠긴 표정을 지었다." },
+        { en: "\"Wyatt, you cannot keep that GameMaster,\" he said.", ko: "\"와이엇, 그 게임마스터를 네가 가질 수는 없어,\" 그가 말했다." },
+        { en: "\"You have a responsibility to return it. It is your duty!\"", ko: "\"너는 그것을 돌려줄 책임이 있어. 그건 너의 의무야!\"" },
+        { en: "I asked, \"Haven't you ever heard the saying, 'finders keepers, losers weepers'? I have rights. I found it, so I am claiming it.\"", ko: "나는 물었다, \"'먼저 주운 사람이 임자'라는 말도 못 들어봤어? 나도 권리가 있어. 내가 찾았으니 내 소유를 주장하는 거야.\"" },
+        { en: "\"You can do whatever you want, Wyatt, but you know it's wrong to keep it,\" Paul said.", ko: "\"네가 원하는 대로 할 수는 있겠지만, 와이엇, 그걸 가지는 건 잘못된 일이라는 걸 너도 알잖아,\" 폴이 말했다." },
+        { en: "Then he added, \"Whenever there are issues like this at school, you're the one who helps solve the problems. Now you aren't taking your own advice.\"", ko: "그러고는 덧붙였다, \"학교에서 이런 문제가 생길 때마다 해결하도록 도와주는 사람이 바로 너잖아. 지금은 네가 네 자신의 조언을 따르지 않고 있어.\"" },
+        { en: "Then Paul added, \"I volunteered my thoughts. If you don't want to take the help I offered, there's nothing I can do.\"", ko: "그리고 폴이 덧붙였다, \"난 내 생각을 자발적으로 말해준 거야. 내가 건넨 도움을 받기 싫다면 내가 할 수 있는 일은 없어.\"" },
+        { en: "Paul was right.", ko: "폴의 말이 맞았다." },
+        { en: "I couldn't keep the game because it wasn't mine.", ko: "내 것이 아니었기 때문에 그 게임기를 가질 수 없었다." },
+        { en: "The person who lost it would be upset.", ko: "그것을 잃어버린 사람은 속상해할 것이다." },
+        { en: "I cleared my throat and said in my best deep voice, \"I've determined that you're right!\"", ko: "나는 헛기침을 하고 최대한 굵은 목소리로 말했다, \"네 말이 맞다고 결론 내렸어!\"" },
+        { en: "\"I'm delighted you decided to do the right thing,\" said Paul.", ko: "\"네가 옳은 일을 하기로 결정해서 기뻐,\" 폴이 말했다." },
+        { en: "We told my mother what happened.", ko: "우리는 엄마에게 무슨 일이 있었는지 말씀드렸다." },
+        { en: "She walked around the park with us so we could try to find the owner of the game.", ko: "엄마는 우리가 게임기 주인을 찾을 수 있도록 우리와 함께 공원을 돌아다니셨다." },
+        { en: "Soon we saw a boy and his mom looking for something.", ko: "곧 우리는 무언가를 찾고 있는 한 남자아이와 그 엄마를 보았다." },
+        { en: "He looked hopeless, and he burst into tears when we asked him if the game was his.", ko: "아이는 절망적으로 보였고, 우리가 게임기가 자기 것인지 묻자 울음을 터뜨렸다." },
+        { en: "\"Yes,\" he wailed, \"I lost my GameMaster a little while ago. I should have been more careful!\"", ko: "\"맞아요,\" 아이가 울부짖었다, \"조금 전에 게임마스터를 잃어버렸어요. 더 조심했어야 했는데!\"" },
+        { en: "Afterward, Mom and I walked home.", ko: "그 후, 엄마와 나는 집으로 걸어갔다." },
+        { en: "I was glad I returned the toy to the boy.", ko: "나는 그 남자아이에게 장난감을 돌려주어서 기뻤다." },
+        { en: "So I made a promise to myself to always try to do the right thing.", ko: "그래서 나는 항상 옳은 일을 하려고 노력하겠다고 스스로에게 약속했다." },
+        { en: "Now that is a vow I can keep!", ko: "이제 그것은 내가 지킬 수 있는 맹세다!" }
+      ]
+    };
+
+    const STORAGE_KEY_PASSAGES = "english_shadowing_custom_passages_v1";
+    const STORAGE_KEY_ACTIVE = "english_shadowing_active_passage_v1";
+
+    // =========================================================================
+    // 2. 앱 상태 관리
+    // =========================================================================
+    const state = {
+      passages: [],              // [PRESET_PASSAGE, ...customPassages]
+      activePassageId: PRESET_PASSAGE.id,
+      editingPassageId: null,    // 모달에서 편집 중인 지문 ID (null이면 새로 추가)
+      currentIndex: 0,
+      isPlaying: false,
+      isPaused: false,
+      playAllMode: false,
+      repeatSentence: false,
+      showTranslation: true,
+      rate: 0.75,
+      intervalSeconds: 1.5,
+      voices: [],
+      selectedVoiceURI: "",
+      sessionId: 0,
+      currentUtterance: null,
+      pauseTimerId: null,
+      countdownIntervalId: null,
+      toastTimerId: null
+    };
+
+    // =========================================================================
+    // 3. DOM 요소 참조
+    // =========================================================================
+    const els = {
+      headerTitle: document.getElementById("headerTitle"),
+      headerTranslationBtn: document.getElementById("headerTranslationBtn"),
+      headerTranslationLabel: document.getElementById("headerTranslationLabel"),
+      openAddModalBtn: document.getElementById("openAddModalBtn"),
+      unsupportedAlert: document.getElementById("unsupportedAlert"),
+      passageSelect: document.getElementById("passageSelect"),
+      passageMetaBadge: document.getElementById("passageMetaBadge"),
+      customPassageActions: document.getElementById("customPassageActions"),
+      editPassageBtn: document.getElementById("editPassageBtn"),
+      deletePassageBtn: document.getElementById("deletePassageBtn"),
+      voiceSelect: document.getElementById("voiceSelect"),
+      voiceCountBadge: document.getElementById("voiceCountBadge"),
+      speedSlider: document.getElementById("speedSlider"),
+      speedValue: document.getElementById("speedValue"),
+      barSpeedBadge: document.getElementById("barSpeedBadge"),
+      intervalSlider: document.getElementById("intervalSlider"),
+      intervalValue: document.getElementById("intervalValue"),
+      repeatToggleBtn: document.getElementById("repeatToggleBtn"),
+      repeatStateText: document.getElementById("repeatStateText"),
+      barRepeatBtn: document.getElementById("barRepeatBtn"),
+      translationToggleBtn: document.getElementById("translationToggleBtn"),
+      translationStateText: document.getElementById("translationStateText"),
+      sentencesContainer: document.getElementById("sentencesContainer"),
+      prevBtn: document.getElementById("prevBtn"),
+      playPauseBtn: document.getElementById("playPauseBtn"),
+      playIcon: document.getElementById("playIcon"),
+      pauseIcon: document.getElementById("pauseIcon"),
+      playPauseLabel: document.getElementById("playPauseLabel"),
+      stopBtn: document.getElementById("stopBtn"),
+      nextBtn: document.getElementById("nextBtn"),
+      statusBadge: document.getElementById("statusBadge"),
+      statusDot: document.getElementById("statusDot"),
+      statusText: document.getElementById("statusText"),
+      currentSentenceInfo: document.getElementById("currentSentenceInfo"),
+      countdownDisplay: document.getElementById("countdownDisplay"),
+      countdownSeconds: document.getElementById("countdownSeconds"),
+      pauseProgressBar: document.getElementById("pauseProgressBar"),
+      // 추가/편집 모달
+      passageModal: document.getElementById("passageModal"),
+      modalTitle: document.getElementById("modalTitle"),
+      closeModalBtn: document.getElementById("closeModalBtn"),
+      cancelModalBtn: document.getElementById("cancelModalBtn"),
+      savePassageBtn: document.getElementById("savePassageBtn"),
+      inputPassageTitle: document.getElementById("inputPassageTitle"),
+      inputPassageContent: document.getElementById("inputPassageContent"),
+      previewCountBadge: document.getElementById("previewCountBadge"),
+      modalErrorMsg: document.getElementById("modalErrorMsg"),
+      // 삭제 확인 모달
+      deleteModal: document.getElementById("deleteModal"),
+      deleteTargetName: document.getElementById("deleteTargetName"),
+      cancelDeleteBtn: document.getElementById("cancelDeleteBtn"),
+      confirmDeleteBtn: document.getElementById("confirmDeleteBtn"),
+      // 토스트
+      toast: document.getElementById("toast")
+    };
+
+    // =========================================================================
+    // 4. LocalStorage 저장/로드 및 지문 파싱 유틸리티
+    // =========================================================================
+    function loadPassagesFromStorage() {
+      let customPassages = [];
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY_PASSAGES);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) customPassages = parsed;
+        }
+      } catch (err) {
+        console.error("LocalStorage 로드 오류:", err);
+      }
+      state.passages = [PRESET_PASSAGE, ...customPassages];
+
+      try {
+        const savedActiveId = localStorage.getItem(STORAGE_KEY_ACTIVE);
+        if (savedActiveId && state.passages.some(p => p.id === savedActiveId)) {
+          state.activePassageId = savedActiveId;
+        }
+      } catch (err) {
+        console.error("Active ID 로드 오류:", err);
+      }
+    }
+
+    function saveCustomPassagesToStorage() {
+      const customOnly = state.passages.filter(p => !p.isPreset);
+      try {
+        localStorage.setItem(STORAGE_KEY_PASSAGES, JSON.stringify(customOnly));
+        localStorage.setItem(STORAGE_KEY_ACTIVE, state.activePassageId);
+      } catch (err) {
+        console.error("LocalStorage 저장 오류:", err);
+      }
+    }
+
+    function getActivePassage() {
+      return state.passages.find(p => p.id === state.activePassageId) || PRESET_PASSAGE;
+    }
+
+    /**
+     * 입력 텍스트를 문장 배열 [{ en, ko }]로 지능형 파싱
+     * - '|' 기호가 포함된 줄이 있으면 줄 단위 '영어 | 해석' 파싱
+     * - 일반 영어 문단이면 약어 및 따옴표를 고려해 문장 단위로 자동 분리
+     */
+    function parsePassageInput(rawText) {
+      const trimmed = rawText.trim();
+      if (!trimmed) return [];
+
+      const lines = trimmed.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const hasPipeFormat = lines.some(line => line.includes("|"));
+
+      if (hasPipeFormat) {
+        return lines.map(line => {
+          const idx = line.indexOf("|");
+          if (idx === -1) {
+            return { en: line, ko: "" };
+          }
+          const en = line.slice(0, idx).trim();
+          const ko = line.slice(idx + 1).trim();
+          return { en, ko };
+        }).filter(item => item.en.length > 0);
+      }
+
+      // 일반 영어 문단 자동 문장 분리 (약어 보호 + 따옴표 존중)
+      const abbrevRegex = /\b(Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|vs|etc|e\.g|i\.e)\./gi;
+      const result = [];
+
+      lines.forEach(paragraph => {
+        // 1) 약어의 마침표를 임시 토큰으로 보호
+        const protectedText = paragraph.replace(abbrevRegex, (match) => match.slice(0, -1) + "∯");
+
+        // 2) 문장 종결 부호(. ! ?) + 선택적 닫는 따옴표(" ' ” ’) + 공백 기준으로 분리
+        const rawSentences = protectedText.match(/[^.!?]+(?:[.!?]+["'”’\)\]]*|$)/g) || [protectedText];
+
+        rawSentences.forEach(s => {
+          const restored = s.replace(/∯/g, ".").trim();
+          if (restored) {
+            result.push({ en: restored, ko: "" });
+          }
+        });
+      });
+
+      return result;
+    }
+
+    function showToast(message) {
+      if (state.toastTimerId) clearTimeout(state.toastTimerId);
+      els.toast.textContent = message;
+      els.toast.classList.remove("hidden");
+      state.toastTimerId = setTimeout(() => {
+        els.toast.classList.add("hidden");
+      }, 2400);
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // =========================================================================
+    // 5. 지문 선택 드롭다운 & 문장 카드 렌더링
+    // =========================================================================
+    function renderPassageSelector() {
+      els.passageSelect.innerHTML = "";
+      state.passages.forEach(passage => {
+        const option = document.createElement("option");
+        option.value = passage.id;
+        option.textContent = passage.isPreset
+          ? `📘 [기본] ${passage.title} (${passage.sentences.length}문장)`
+          : `📝 ${passage.title} (${passage.sentences.length}문장)`;
+        els.passageSelect.appendChild(option);
+      });
+      els.passageSelect.value = state.activePassageId;
+
+      const active = getActivePassage();
+      els.headerTitle.textContent = active.title;
+      els.passageMetaBadge.textContent = `총 ${active.sentences.length}문장`;
+
+      // 기본 프리셋은 편집/삭제 숨김, 커스텀 지문은 표시
+      if (active.isPreset) {
+        els.customPassageActions.classList.add("hidden");
+      } else {
+        els.customPassageActions.classList.remove("hidden");
+      }
+    }
+
+    function renderSentences() {
+      const active = getActivePassage();
+      els.sentencesContainer.innerHTML = "";
+
+      active.sentences.forEach((item, idx) => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.id = `sentence-card-${idx}`;
+        card.dataset.index = idx;
+        card.className = "sentence-card w-full text-left bg-white hover:bg-indigo-50/40 border border-cream-200 rounded-2xl p-4 sm:p-5 transition-all duration-200 shadow-sm hover:shadow group focus:outline-none focus:ring-2 focus:ring-indigo-400";
+
+        const hasKo = Boolean(item.ko && item.ko.trim());
+
+        card.innerHTML = `
+          <div class="flex items-start gap-3.5">
+            <span class="sentence-num w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-cream-100 text-slate-600 font-bold text-xs sm:text-sm flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+              ${idx + 1}
+            </span>
+
+            <div class="flex-1 min-w-0 space-y-1.5">
+              <p class="sentence-en text-base sm:text-lg font-medium text-slate-900 leading-relaxed">
+                ${escapeHtml(item.en)}
+              </p>
+              ${hasKo ? `
+                <p class="sentence-ko text-sm text-slate-500 leading-relaxed ${state.showTranslation ? "" : "hidden"}">
+                  ${escapeHtml(item.ko)}
+                </p>
+              ` : ""}
+              <div class="card-pause-badge hidden items-center gap-1.5 text-xs font-semibold text-teal-700 bg-teal-50 border border-teal-100 px-2.5 py-1 rounded-lg w-fit mt-2">
+                <svg class="w-3.5 h-3.5 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="card-pause-text">따라 읽기: 1.5s...</span>
+              </div>
+            </div>
+
+            <div class="shrink-0 mt-1">
+              <div class="play-indicator w-8 h-8 rounded-full bg-slate-100 text-slate-500 group-hover:bg-indigo-100 group-hover:text-indigo-600 flex items-center justify-center transition-colors">
+                <svg class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+              <div class="speaking-indicator hidden w-8 h-8 rounded-full bg-indigo-600 text-white items-center justify-center gap-0.5 px-2">
+                <span class="wave-bar w-0.5 h-3.5 bg-white rounded-full"></span>
+                <span class="wave-bar w-0.5 h-3.5 bg-white rounded-full"></span>
+                <span class="wave-bar w-0.5 h-3.5 bg-white rounded-full"></span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener("click", () => handleCardClick(idx));
+        els.sentencesContainer.appendChild(card);
+      });
+
+      els.currentSentenceInfo.textContent = `문장 1 / ${active.sentences.length}`;
+    }
+
+    function switchPassage(passageId) {
+      stopPlayback(true);
+      state.activePassageId = passageId;
+      state.currentIndex = 0;
+      saveCustomPassagesToStorage();
+      renderPassageSelector();
+      renderSentences();
+      updateControlsUI("idle");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // =========================================================================
+    // 6. Web Speech API 음성 로드
+    // =========================================================================
+    function loadVoices() {
+      if (!("speechSynthesis" in window)) {
+        els.unsupportedAlert.classList.remove("hidden");
+        els.voiceCountBadge.textContent = "미지원 브라우저";
+        return;
+      }
+
+      const rawVoices = window.speechSynthesis.getVoices();
+      const enVoices = rawVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith("en"));
+
+      enVoices.sort((a, b) => {
+        const score = (v) => {
+          let s = 0;
+          const lang = v.lang.toLowerCase();
+          const name = v.name.toLowerCase();
+          if (lang === "en-us" || lang === "en_us") s += 10;
+          if (name.includes("google us english")) s += 20;
+          if (name.includes("natural") || name.includes("aria") || name.includes("jenny") || name.includes("samantha")) s += 15;
+          if (name.includes("premium") || name.includes("enhanced")) s += 12;
+          return s;
+        };
+        return score(b) - score(a);
+      });
+
+      state.voices = enVoices;
+
+      if (enVoices.length === 0) {
+        els.voiceSelect.innerHTML = `<option value="">기본 영어 음성 (en-US)</option>`;
+        els.voiceCountBadge.textContent = "기본 음성 사용";
+        return;
+      }
+
+      els.voiceCountBadge.textContent = `영어 음성 ${enVoices.length}개`;
+      els.voiceSelect.innerHTML = "";
+
+      enVoices.forEach(voice => {
+        const option = document.createElement("option");
+        option.value = voice.voiceURI;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        els.voiceSelect.appendChild(option);
+      });
+
+      if (enVoices.some(v => v.voiceURI === state.selectedVoiceURI)) {
+        els.voiceSelect.value = state.selectedVoiceURI;
+      } else {
+        state.selectedVoiceURI = enVoices[0].voiceURI;
+        els.voiceSelect.value = state.selectedVoiceURI;
+      }
+    }
+
+    // =========================================================================
+    // 7. 재생 / 일시정지 / 정지 / 카운트다운 핵심 로직
+    // =========================================================================
+    function clearTimers() {
+      if (state.pauseTimerId) {
+        clearTimeout(state.pauseTimerId);
+        state.pauseTimerId = null;
+      }
+      if (state.countdownIntervalId) {
+        clearInterval(state.countdownIntervalId);
+        state.countdownIntervalId = null;
+      }
+      els.countdownDisplay.classList.add("hidden");
+      els.pauseProgressBar.style.width = "0%";
+      document.querySelectorAll(".card-pause-badge").forEach(b => {
+        b.classList.add("hidden");
+        b.classList.remove("inline-flex");
+      });
+    }
+
+    function cancelSpeechOnly() {
+      state.sessionId += 1;
+      clearTimers();
+      try {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+      } catch (err) {
+        console.error("Speech cancel error:", err);
+      }
+      state.currentUtterance = null;
+    }
+
+    function speakSentence(index, scrollIntoView = true) {
+      if (!("speechSynthesis" in window)) {
+        els.unsupportedAlert.classList.remove("hidden");
+        return;
+      }
+
+      const sentences = getActivePassage().sentences;
+      if (index < 0 || index >= sentences.length) {
+        stopPlayback(true);
+        return;
+      }
+
+      cancelSpeechOnly();
+      const mySession = state.sessionId;
+
+      state.currentIndex = index;
+      state.isPlaying = true;
+      state.isPaused = false;
+
+      updateActiveCardUI(index, "speaking", scrollIntoView);
+      updateControlsUI("speaking");
+
+      const utterance = new SpeechSynthesisUtterance(sentences[index].en);
+      utterance.lang = "en-US";
+      utterance.rate = state.rate;
+      utterance.pitch = 1.0;
+
+      const selectedVoice = state.voices.find(v => v.voiceURI === state.selectedVoiceURI);
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        utterance.lang = selectedVoice.lang || "en-US";
+      }
+
+      state.currentUtterance = utterance;
+
+      utterance.onend = () => {
+        if (state.sessionId !== mySession) return;
+        handleSentenceFinished(mySession);
+      };
+
+      utterance.onerror = (event) => {
+        if (state.sessionId !== mySession) return;
+        if (event.error === "canceled" || event.error === "interrupted") return;
+        console.error("Speech error:", event.error);
+        stopPlayback(false);
+      };
+
+      try {
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.error("Speak failed:", err);
+        stopPlayback(false);
+      }
+    }
+
+    function handleSentenceFinished(mySession) {
+      const sentences = getActivePassage().sentences;
+
+      if (state.repeatSentence) {
+        startPauseInterval(mySession, () => {
+          speakSentence(state.currentIndex, false);
+        });
+        return;
+      }
+
+      if (state.playAllMode) {
+        const nextIndex = state.currentIndex + 1;
+        if (nextIndex < sentences.length) {
+          startPauseInterval(mySession, () => {
+            speakSentence(nextIndex, true);
+          });
+        } else {
+          stopPlayback(true);
+          setStatus("완료", "bg-teal-100 text-teal-700", "bg-teal-500");
+        }
+        return;
+      }
+
+      state.isPlaying = false;
+      state.isPaused = false;
+      updateActiveCardUI(state.currentIndex, "idle", false);
+      updateControlsUI("idle");
+    }
+
+    function startPauseInterval(mySession, onComplete) {
+      const waitMs = Math.round(state.intervalSeconds * 1000);
+      if (waitMs <= 0) {
+        onComplete();
+        return;
+      }
+
+      const startTime = Date.now();
+      updateActiveCardUI(state.currentIndex, "waiting", false);
+      updateControlsUI("waiting");
+
+      els.countdownDisplay.classList.remove("hidden");
+      els.countdownSeconds.textContent = state.intervalSeconds.toFixed(1);
+      els.pauseProgressBar.style.width = "100%";
+
+      const activeCard = document.getElementById(`sentence-card-${state.currentIndex}`);
+      const cardBadge = activeCard ? activeCard.querySelector(".card-pause-badge") : null;
+      const cardBadgeText = activeCard ? activeCard.querySelector(".card-pause-text") : null;
+      if (cardBadge) {
+        cardBadge.classList.remove("hidden");
+        cardBadge.classList.add("inline-flex");
+      }
+
+      state.countdownIntervalId = setInterval(() => {
+        if (state.sessionId !== mySession) {
+          clearTimers();
+          return;
+        }
+        const elapsed = Date.now() - startTime;
+        const remainingMs = Math.max(0, waitMs - elapsed);
+        const remainingSec = (remainingMs / 1000).toFixed(1);
+        const pct = Math.max(0, (remainingMs / waitMs) * 100);
+
+        els.countdownSeconds.textContent = remainingSec;
+        els.pauseProgressBar.style.width = `${pct}%`;
+        if (cardBadgeText) {
+          cardBadgeText.textContent = `따라 읽기: ${remainingSec}s...`;
+        }
+      }, 80);
+
+      state.pauseTimerId = setTimeout(() => {
+        if (state.sessionId !== mySession) return;
+        clearTimers();
+        onComplete();
+      }, waitMs);
+    }
+
+    function handleCardClick(index) {
+      if (!state.isPlaying) {
+        state.playAllMode = false;
+      }
+      speakSentence(index, true);
+    }
+
+    function togglePlayPause() {
+      if (state.isPlaying) {
+        cancelSpeechOnly();
+        state.isPlaying = false;
+        state.isPaused = true;
+        updateActiveCardUI(state.currentIndex, "paused", false);
+        updateControlsUI("paused");
+      } else {
+        state.playAllMode = true;
+        speakSentence(state.currentIndex, true);
+      }
+    }
+
+    function stopPlayback(resetIndex = false) {
+      cancelSpeechOnly();
+      state.isPlaying = false;
+      state.isPaused = false;
+      state.playAllMode = false;
+      if (resetIndex) state.currentIndex = 0;
+      updateActiveCardUI(state.currentIndex, "idle", false);
+      updateControlsUI("idle");
+    }
+
+    function playPrev() {
+      const target = Math.max(0, state.currentIndex - 1);
+      speakSentence(target, true);
+    }
+
+    function playNext() {
+      const total = getActivePassage().sentences.length;
+      const target = Math.min(total - 1, state.currentIndex + 1);
+      speakSentence(target, true);
+    }
+
+    // =========================================================================
+    // 8. UI 상태 동기화
+    // =========================================================================
+    function updateActiveCardUI(activeIndex, mode, shouldScroll) {
+      const total = getActivePassage().sentences.length;
+      document.querySelectorAll(".sentence-card").forEach((card, idx) => {
+        const numBadge = card.querySelector(".sentence-num");
+        const playInd = card.querySelector(".play-indicator");
+        const speakInd = card.querySelector(".speaking-indicator");
+
+        if (idx === activeIndex && (mode === "speaking" || mode === "waiting" || mode === "paused")) {
+          card.classList.add("bg-indigo-50/70", "border-indigo-400", "ring-2", "ring-indigo-200");
+          card.classList.remove("bg-white", "border-cream-200");
+          numBadge.classList.add("bg-indigo-600", "text-white");
+          numBadge.classList.remove("bg-cream-100", "text-slate-600");
+
+          if (mode === "speaking") {
+            playInd.classList.add("hidden");
+            speakInd.classList.remove("hidden");
+            speakInd.classList.add("flex");
+          } else {
+            playInd.classList.remove("hidden");
+            speakInd.classList.add("hidden");
+            speakInd.classList.remove("flex");
+          }
+        } else {
+          card.classList.remove("bg-indigo-50/70", "border-indigo-400", "ring-2", "ring-indigo-200");
+          card.classList.add("bg-white", "border-cream-200");
+          numBadge.classList.remove("bg-indigo-600", "text-white");
+          numBadge.classList.add("bg-cream-100", "text-slate-600");
+          playInd.classList.remove("hidden");
+          speakInd.classList.add("hidden");
+          speakInd.classList.remove("flex");
+        }
+      });
+
+      els.currentSentenceInfo.textContent = `문장 ${activeIndex + 1} / ${total}`;
+
+      if (shouldScroll) {
+        const activeCard = document.getElementById(`sentence-card-${activeIndex}`);
+        if (activeCard) {
+          activeCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    }
+
+    function setStatus(text, badgeClasses, dotClass) {
+      els.statusText.textContent = text;
+      els.statusBadge.className = `inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold shrink-0 ${badgeClasses}`;
+      els.statusDot.className = `w-2 h-2 rounded-full ${dotClass}`;
+    }
+
+    function updateControlsUI(mode) {
+      if (mode === "speaking") {
+        els.playIcon.classList.add("hidden");
+        els.pauseIcon.classList.remove("hidden");
+        els.playPauseLabel.textContent = "일시정지";
+        setStatus("읽는 중", "bg-indigo-100 text-indigo-700", "bg-indigo-600 animate-pulse");
+      } else if (mode === "waiting") {
+        els.playIcon.classList.add("hidden");
+        els.pauseIcon.classList.remove("hidden");
+        els.playPauseLabel.textContent = "일시정지";
+        setStatus("따라 읽기", "bg-teal-100 text-teal-700", "bg-teal-500 animate-pulse");
+      } else if (mode === "paused") {
+        els.playIcon.classList.remove("hidden");
+        els.pauseIcon.classList.add("hidden");
+        els.playPauseLabel.textContent = "이어서 재생";
+        setStatus("일시정지", "bg-amber-100 text-amber-800", "bg-amber-500");
+      } else {
+        els.playIcon.classList.remove("hidden");
+        els.pauseIcon.classList.add("hidden");
+        els.playPauseLabel.textContent = "전체 재생";
+        setStatus("대기 중", "bg-slate-100 text-slate-600", "bg-slate-400");
+      }
+    }
+
+    function updateRepeatUI() {
+      const isOn = state.repeatSentence;
+      els.repeatStateText.textContent = isOn ? "ON" : "OFF";
+      els.repeatToggleBtn.setAttribute("aria-pressed", String(isOn));
+      els.barRepeatBtn.setAttribute("aria-pressed", String(isOn));
+
+      if (isOn) {
+        els.repeatToggleBtn.className = "inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100";
+        els.barRepeatBtn.className = "p-2.5 rounded-xl border border-indigo-300 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition";
+      } else {
+        els.repeatToggleBtn.className = "inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
+        els.barRepeatBtn.className = "p-2.5 rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition";
+      }
+    }
+
+    function updateTranslationUI() {
+      const isOn = state.showTranslation;
+      els.translationStateText.textContent = isOn ? "ON" : "OFF";
+      els.headerTranslationLabel.textContent = isOn ? "해석 ON" : "해석 OFF";
+      els.translationToggleBtn.setAttribute("aria-pressed", String(isOn));
+      els.headerTranslationBtn.setAttribute("aria-pressed", String(isOn));
+
+      if (isOn) {
+        els.translationToggleBtn.className = "inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100";
+        els.headerTranslationBtn.className = "inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100";
+      } else {
+        els.translationToggleBtn.className = "inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
+        els.headerTranslationBtn.className = "inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-white text-slate-500 border-slate-200 hover:bg-slate-50";
+      }
+
+      document.querySelectorAll(".sentence-ko").forEach(el => {
+        el.classList.toggle("hidden", !isOn);
+      });
+    }
+
+    // =========================================================================
+    // 9. 새 지문 추가 / 편집 / 삭제 모달 로직
+    // =========================================================================
+    function openPassageModal(passageToEdit = null) {
+      els.modalErrorMsg.classList.add("hidden");
+
+      if (passageToEdit) {
+        state.editingPassageId = passageToEdit.id;
+        els.modalTitle.textContent = "지문 편집";
+        els.inputPassageTitle.value = passageToEdit.title;
+        els.inputPassageContent.value = passageToEdit.sentences
+          .map(s => (s.ko ? `${s.en} | ${s.ko}` : s.en))
+          .join("\n");
+      } else {
+        state.editingPassageId = null;
+        els.modalTitle.textContent = "새 지문 추가";
+        els.inputPassageTitle.value = "";
+        els.inputPassageContent.value = "";
+      }
+
+      updateModalPreviewCount();
+      els.passageModal.classList.remove("hidden");
+      els.passageModal.classList.add("flex");
+      els.inputPassageTitle.focus();
+    }
+
+    function closePassageModal() {
+      els.passageModal.classList.add("hidden");
+      els.passageModal.classList.remove("flex");
+    }
+
+    function updateModalPreviewCount() {
+      const parsed = parsePassageInput(els.inputPassageContent.value);
+      els.previewCountBadge.textContent = `${parsed.length}문장 인식됨`;
+    }
+
+    function handleSavePassage() {
+      const title = els.inputPassageTitle.value.trim();
+      const sentences = parsePassageInput(els.inputPassageContent.value);
+
+      if (!title) {
+        els.modalErrorMsg.textContent = "지문 제목을 입력해 주세요.";
+        els.modalErrorMsg.classList.remove("hidden");
+        els.inputPassageTitle.focus();
+        return;
+      }
+
+      if (sentences.length === 0) {
+        els.modalErrorMsg.textContent = "영어 문장을 1개 이상 입력해 주세요.";
+        els.modalErrorMsg.classList.remove("hidden");
+        els.inputPassageContent.focus();
+        return;
+      }
+
+      if (state.editingPassageId) {
+        const target = state.passages.find(p => p.id === state.editingPassageId);
+        if (target) {
+          target.title = title;
+          target.sentences = sentences;
+        }
+        saveCustomPassagesToStorage();
+        closePassageModal();
+        switchPassage(state.editingPassageId);
+        showToast("지문이 수정되었습니다.");
+      } else {
+        const newPassage = {
+          id: "custom-" + Date.now(),
+          title,
+          isPreset: false,
+          sentences
+        };
+        state.passages.push(newPassage);
+        saveCustomPassagesToStorage();
+        closePassageModal();
+        switchPassage(newPassage.id);
+        showToast("새 지문이 저장되었습니다.");
+      }
+    }
+
+    function openDeleteModal() {
+      const active = getActivePassage();
+      if (active.isPreset) return;
+      els.deleteTargetName.textContent = `"${active.title}" 지문이 브라우저에서 영구 삭제됩니다.`;
+      els.deleteModal.classList.remove("hidden");
+      els.deleteModal.classList.add("flex");
+    }
+
+    function closeDeleteModal() {
+      els.deleteModal.classList.add("hidden");
+      els.deleteModal.classList.remove("flex");
+    }
+
+    function handleConfirmDelete() {
+      const targetId = state.activePassageId;
+      state.passages = state.passages.filter(p => p.id !== targetId);
+      closeDeleteModal();
+      switchPassage(PRESET_PASSAGE.id);
+      showToast("지문이 삭제되었습니다.");
+    }
+
+    // =========================================================================
+    // 10. 이벤트 바인딩 및 초기화
+    // =========================================================================
+    function bindEvents() {
+      els.passageSelect.addEventListener("change", (e) => {
+        switchPassage(e.target.value);
+      });
+
+      els.openAddModalBtn.addEventListener("click", () => openPassageModal(null));
+      els.editPassageBtn.addEventListener("click", () => {
+        const active = getActivePassage();
+        if (!active.isPreset) openPassageModal(active);
+      });
+      els.deletePassageBtn.addEventListener("click", openDeleteModal);
+
+      els.closeModalBtn.addEventListener("click", closePassageModal);
+      els.cancelModalBtn.addEventListener("click", closePassageModal);
+      els.savePassageBtn.addEventListener("click", handleSavePassage);
+      els.inputPassageContent.addEventListener("input", updateModalPreviewCount);
+
+      // 모달 바깥 영역 클릭 시 닫기
+      els.passageModal.addEventListener("click", (e) => {
+        if (e.target === els.passageModal) closePassageModal();
+      });
+      els.deleteModal.addEventListener("click", (e) => {
+        if (e.target === els.deleteModal) closeDeleteModal();
+      });
+
+      els.cancelDeleteBtn.addEventListener("click", closeDeleteModal);
+      els.confirmDeleteBtn.addEventListener("click", handleConfirmDelete);
+
+      els.voiceSelect.addEventListener("change", (e) => {
+        state.selectedVoiceURI = e.target.value;
+        if (state.isPlaying) speakSentence(state.currentIndex, false);
+      });
+
+      els.speedSlider.addEventListener("input", (e) => {
+        state.rate = parseFloat(e.target.value);
+        const formatted = `${state.rate.toFixed(2)}x`;
+        els.speedValue.textContent = formatted;
+        els.barSpeedBadge.textContent = formatted;
+      });
+
+      els.intervalSlider.addEventListener("input", (e) => {
+        state.intervalSeconds = parseFloat(e.target.value);
+        els.intervalValue.textContent = `${state.intervalSeconds.toFixed(1)}초`;
+      });
+
+      const toggleRepeat = () => {
+        state.repeatSentence = !state.repeatSentence;
+        updateRepeatUI();
+      };
+      els.repeatToggleBtn.addEventListener("click", toggleRepeat);
+      els.barRepeatBtn.addEventListener("click", toggleRepeat);
+
+      const toggleTranslation = () => {
+        state.showTranslation = !state.showTranslation;
+        updateTranslationUI();
+      };
+      els.translationToggleBtn.addEventListener("click", toggleTranslation);
+      els.headerTranslationBtn.addEventListener("click", toggleTranslation);
+
+      els.playPauseBtn.addEventListener("click", togglePlayPause);
+      els.stopBtn.addEventListener("click", () => stopPlayback(true));
+      els.prevBtn.addEventListener("click", playPrev);
+      els.nextBtn.addEventListener("click", playNext);
+
+      window.addEventListener("beforeunload", () => cancelSpeechOnly());
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadPassagesFromStorage();
+      renderPassageSelector();
+      renderSentences();
+      bindEvents();
+      loadVoices();
+      updateRepeatUI();
+      updateTranslationUI();
+      updateControlsUI("idle");
+    });
+  </script>
+</body>
+</html>
