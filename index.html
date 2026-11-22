@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>영어 읽기·듣기 연습장</title>
+  <title>나만의 영어 읽기·듣기 연습장</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts: Inter & Noto Sans KR -->
@@ -50,30 +50,52 @@
 
   <!-- 상단 고정 헤더 -->
   <header class="bg-white/90 backdrop-blur-md border-b border-cream-200 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-2.5">
-      <div class="flex items-center gap-2.5 min-w-0">
+    <div class="max-w-3xl mx-auto px-3 sm:px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+      <!-- 앱 로고 & 현재 지문 제목 -->
+      <div class="flex items-center gap-2.5 min-w-0 flex-1">
         <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-teal-500 flex items-center justify-center text-white shadow-sm shrink-0">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
         </div>
         <div class="truncate">
-          <p class="text-[11px] font-semibold text-teal-600 tracking-wide uppercase">English Shadowing Studio</p>
-          <h1 id="headerTitle" class="text-base sm:text-lg font-bold text-slate-900 truncate">A Difficult Decision</h1>
+          <p class="text-[10px] sm:text-[11px] font-semibold text-teal-600 tracking-wide uppercase">English Shadowing Studio</p>
+          <h1 id="headerTitle" class="text-sm sm:text-lg font-bold text-slate-900 truncate">A Sunny Morning Walk</h1>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 shrink-0">
+      <!-- 우측 액션 버튼 그룹 -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <!-- GitHub 동기화 상태 & 설정 버튼 -->
+        <button
+          id="openSyncModalBtn"
+          type="button"
+          title="GitHub 동기화 설정"
+          class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+        >
+          <span id="syncStatusDot" class="w-2 h-2 rounded-full bg-slate-400 shrink-0"></span>
+          <span id="syncStatusLabel" class="whitespace-nowrap">로컬 모드</span>
+        </button>
+
+        <!-- 최신 지문 수동 새로고침 버튼 -->
+        <button
+          id="refreshSyncBtn"
+          type="button"
+          title="최신 지문 불러오기"
+          class="p-2 rounded-xl text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 active:scale-95 transition"
+        >
+          <svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+
         <!-- 한글 해석 토글 -->
         <button
           id="headerTranslationBtn"
           type="button"
-          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100"
+          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100"
           aria-pressed="true"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-          </svg>
           <span id="headerTranslationLabel">해석 ON</span>
         </button>
 
@@ -81,12 +103,12 @@
         <button
           id="openAddModalBtn"
           type="button"
-          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white shadow-sm transition-all"
+          class="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white shadow-sm transition-all"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
           </svg>
-          <span>새 지문 추가</span>
+          <span>새 지문</span>
         </button>
       </div>
     </div>
@@ -115,7 +137,7 @@
           </svg>
           학습 지문 선택
         </label>
-        <span id="passageMetaBadge" class="text-xs font-medium text-slate-500 bg-cream-100 px-2.5 py-1 rounded-full">총 28문장</span>
+        <span id="passageMetaBadge" class="text-xs font-medium text-slate-500 bg-cream-100 px-2.5 py-1 rounded-full">총 6문장</span>
       </div>
 
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
@@ -124,7 +146,7 @@
           class="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
         ></select>
 
-        <!-- 커스텀 지문 편집/삭제 버튼 (기본 프리셋일 때는 숨김) -->
+        <!-- 커스텀 지문 편집/삭제 버튼 -->
         <div id="customPassageActions" class="hidden flex items-center gap-2 shrink-0">
           <button
             id="editPassageBtn"
@@ -271,7 +293,7 @@
             <span id="statusDot" class="w-2 h-2 rounded-full bg-slate-400"></span>
             <span id="statusText">대기 중</span>
           </span>
-          <span id="currentSentenceInfo" class="text-slate-500 font-medium truncate">문장 1 / 28</span>
+          <span id="currentSentenceInfo" class="text-slate-500 font-medium truncate">문장 1 / 6</span>
         </div>
         <div id="countdownDisplay" class="font-semibold text-teal-600 hidden shrink-0">
           따라 읽기: <span id="countdownSeconds">1.5</span>s...
@@ -379,30 +401,45 @@
           <input
             id="inputPassageTitle"
             type="text"
-            placeholder="예: My Summer Vacation"
+            placeholder="예: Chapter 1 - What's This?"
             class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
           />
         </div>
 
-        <!-- 영어 본문 입력 -->
+        <!-- 영어 지문 입력 -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
-            <label for="inputPassageContent" class="text-xs font-bold text-slate-700">영어 지문 입력</label>
-            <span id="previewCountBadge" class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg">0문장 인식됨</span>
+            <label for="inputPassageEn" class="text-xs font-bold text-slate-700">영어 지문 입력 (필수)</label>
+            <span id="previewEnCount" class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg">0문장 인식됨</span>
           </div>
           <textarea
-            id="inputPassageContent"
-            rows="9"
-            placeholder="영어 문단을 그대로 붙여넣거나, 한 줄에 한 문장씩 입력하세요.&#10;&#10;[한글 해석을 함께 넣고 싶다면]&#10;Hello, how are you? | 안녕하세요, 잘 지내시나요?&#10;I love reading books. | 저는 책 읽는 것을 좋아해요."
+            id="inputPassageEn"
+            rows="6"
+            placeholder="영어 문단을 그대로 붙여넣으면 마침표(.), 물음표(?), 느낌표(!)와 따옴표를 기준으로 자동 분리됩니다.&#10;또는 한 줄에 한 문장씩 직접 입력하셔도 됩니다."
             class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm text-slate-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition resize-y"
           ></textarea>
         </div>
 
-        <!-- 입력 형식 안내 -->
-        <div class="rounded-xl bg-cream-50 border border-cream-200 p-3.5 text-xs text-slate-600 space-y-1.5 leading-relaxed">
-          <p class="font-bold text-slate-700">💡 두 가지 입력 방식을 모두 지원합니다</p>
-          <p><strong>1) 일반 영어 문단:</strong> 그대로 붙여넣으면 마침표(.), 물음표(?), 느낌표(!)와 따옴표를 인식해 자동으로 문장 단위로 나눕니다.</p>
-          <p><strong>2) 한글 해석 포함:</strong> <code class="bg-white px-1.5 py-0.5 rounded border border-slate-200 text-indigo-700">영어 문장 | 한글 해석</code> 형식으로 한 줄씩 입력하면 해석이 함께 저장됩니다.</p>
+        <!-- 한글 해석 입력 (선택) -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="inputPassageKo" class="text-xs font-bold text-slate-700">한글 해석 입력 (선택 사항)</label>
+            <span id="previewKoCount" class="text-xs font-medium text-teal-700 bg-teal-50 px-2 py-0.5 rounded-lg">0줄</span>
+          </div>
+          <textarea
+            id="inputPassageKo"
+            rows="4"
+            placeholder="비워두셔도 괜찮습니다. 해석을 넣고 싶다면 영어 문장 순서에 맞춰 한 줄에 한 문장씩 입력해 주세요."
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-sm text-slate-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition resize-y"
+          ></textarea>
+        </div>
+
+        <!-- 저장 위치 안내 -->
+        <div id="modalSyncHint" class="rounded-xl bg-cream-50 border border-cream-200 p-3 text-xs text-slate-600 flex items-center gap-2">
+          <svg class="w-4 h-4 text-indigo-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span id="modalSyncHintText">현재 브라우저에만 저장됩니다. GitHub 동기화를 설정하면 모든 기기에서 공유됩니다.</span>
         </div>
 
         <!-- 에러 메시지 -->
@@ -414,15 +451,167 @@
         <button id="cancelModalBtn" type="button" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-200/70 transition">
           취소
         </button>
-        <button id="savePassageBtn" type="button" class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition">
-          저장하기
+        <button id="savePassageBtn" type="button" class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition inline-flex items-center gap-2">
+          <span id="savePassageBtnText">저장하기</span>
         </button>
       </div>
     </div>
   </div>
 
   <!-- =====================================================================
-       모달 2: 삭제 확인 모달 (confirm() 대체)
+       모달 2: GitHub 동기화 설정 모달
+       ===================================================================== -->
+  <div id="syncModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
+      <!-- 모달 헤더 -->
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">GitHub 동기화 설정</h3>
+        </div>
+        <button id="closeSyncModalBtn" type="button" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- 모달 본문 -->
+      <div class="p-6 space-y-4 overflow-y-auto">
+        <!-- 자동 감지 배너 -->
+        <div id="autoDetectBanner" class="hidden rounded-xl bg-indigo-50 border border-indigo-100 p-3 text-xs text-indigo-800">
+          GitHub Pages 주소에서 저장소 정보가 자동 감지되었습니다.
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="ghOwner" class="block text-xs font-bold text-slate-700 mb-1">GitHub 사용자명 (Owner)</label>
+            <input
+              id="ghOwner"
+              type="text"
+              placeholder="예: my-username"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+            />
+          </div>
+          <div>
+            <label for="ghRepo" class="block text-xs font-bold text-slate-700 mb-1">저장소 이름 (Repo)</label>
+            <input
+              id="ghRepo"
+              type="text"
+              placeholder="예: english-reader"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="ghBranch" class="block text-xs font-bold text-slate-700 mb-1">브랜치 (Branch)</label>
+            <input
+              id="ghBranch"
+              type="text"
+              value="main"
+              placeholder="main"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+            />
+          </div>
+          <div>
+            <label for="ghFilePath" class="block text-xs font-bold text-slate-700 mb-1">저장 파일명</label>
+            <input
+              id="ghFilePath"
+              type="text"
+              value="passages.json"
+              placeholder="passages.json"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+            />
+          </div>
+        </div>
+
+        <!-- PAT 입력 -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label for="ghToken" class="text-xs font-bold text-slate-700">GitHub Personal Access Token (PAT)</label>
+            <span class="text-[11px] text-slate-400">이 브라우저에만 안전하게 보관됨</span>
+          </div>
+          <div class="relative">
+            <input
+              id="ghToken"
+              type="password"
+              autocomplete="off"
+              placeholder="github_pat_... (읽기만 하려면 비워두세요)"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 pl-3.5 pr-10 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+            />
+            <button
+              id="toggleTokenVisibilityBtn"
+              type="button"
+              title="토큰 보기/숨기기"
+              class="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-slate-600"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- 토큰 발급 안내 박스 -->
+        <details class="rounded-2xl bg-cream-50 border border-cream-200 p-3.5 text-xs text-slate-600">
+          <summary class="font-bold text-slate-800 cursor-pointer select-none">
+            🔑 Fine-grained PAT 토큰 발급 방법 (1분)
+          </summary>
+          <ol class="mt-2.5 space-y-1.5 list-decimal list-inside leading-relaxed">
+            <li>GitHub 로그인 → 우측 상단 프로필 → <strong>Settings</strong></li>
+            <li>왼쪽 맨 아래 <strong>Developer settings</strong> → <strong>Personal access tokens</strong> → <strong>Fine-grained tokens</strong></li>
+            <li><strong>Generate new token</strong> 클릭 → 이름 입력 후 <strong>Repository access</strong>에서 <strong>Only select repositories</strong>로 이 저장소 선택</li>
+            <li><strong>Permissions → Repository permissions → Contents</strong>를 <strong>Read and write</strong>로 변경 후 생성</li>
+            <li>발급된 토큰(<code class="bg-white px-1 rounded border">github_pat_...</code>)을 위 입력칸에 붙여넣고 저장하세요.</li>
+          </ol>
+          <p class="mt-2 text-[11px] text-teal-700 font-medium">
+            * Public 저장소라면 다른 기기에서는 토큰을 입력하지 않아도 지문을 자동으로 읽어올 수 있습니다!
+          </p>
+        </details>
+
+        <!-- 테스트 결과 메시지 -->
+        <div id="syncModalFeedback" class="hidden rounded-xl px-3.5 py-2.5 text-xs font-medium"></div>
+      </div>
+
+      <!-- 모달 하단 버튼 -->
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+        <button
+          id="resetTokenBtn"
+          type="button"
+          class="px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition"
+        >
+          토큰 초기화
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button
+            id="testSyncBtn"
+            type="button"
+            class="px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition"
+          >
+            연결 테스트 & 불러오기
+          </button>
+          <button
+            id="saveSyncSettingsBtn"
+            type="button"
+            class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition"
+          >
+            설정 저장
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       모달 3: 삭제 확인 모달 (confirm() 대체)
        ===================================================================== -->
   <div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
     <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-sm p-6 space-y-4">
@@ -447,58 +636,37 @@
   </div>
 
   <!-- 토스트 알림 -->
-  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-medium shadow-lg transition-all"></div>
+  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-medium shadow-lg max-w-[90vw] text-center"></div>
 
   <script>
     // =========================================================================
-    // 1. 기본 프리셋 지문 데이터 ("A Difficult Decision" 28문장)
+    // 1. 기본 샘플 지문 데이터 (오리지널 창작 지문)
     // =========================================================================
-    const PRESET_PASSAGE = {
-      id: "preset-a-difficult-decision",
-      title: "A Difficult Decision",
+    const DEFAULT_SAMPLE_PASSAGE = {
+      id: "sample-sunny-morning-walk",
+      title: "A Sunny Morning Walk",
       isPreset: true,
       sentences: [
-        { en: "My best friend Paul and I were excited to go to the park after school.", ko: "나의 가장 친한 친구 폴과 나는 방과 후에 공원에 가게 되어 신이 났다." },
-        { en: "The park had a new fort.", ko: "그 공원에는 새로운 요새(놀이기구)가 있었다." },
-        { en: "The Parks Department let the kids choose what kind of equipment to build, and the fort got the most votes.", ko: "공원 관리국에서 아이들에게 어떤 놀이기구를 지을지 고르게 했고, 요새가 가장 많은 표를 받았다." },
-        { en: "After school, Mom and I met Paul and his dad at the park.", ko: "방과 후에 엄마와 나는 공원에서 폴과 폴의 아빠를 만났다." },
-        { en: "Paul and I raced to the top of the tower.", ko: "폴과 나는 탑 꼭대기까지 달리기 시합을 했다." },
-        { en: "\"I win. I'm the champion,\" I shouted.", ko: "\"내가 이겼어. 내가 챔피언이야,\" 내가 소리쳤다." },
-        { en: "\"Look, Paul! Someone left the newest GameMaster here. It's mine now!\"", ko: "\"봐, 폴! 누군가 최신형 게임마스터를 여기 두고 갔어. 이제 내 거야!\"" },
-        { en: "Paul raised his eyebrows and looked thoughtful.", ko: "폴은 눈썹을 치켜올리며 생각에 잠긴 표정을 지었다." },
-        { en: "\"Wyatt, you cannot keep that GameMaster,\" he said.", ko: "\"와이엇, 그 게임마스터를 네가 가질 수는 없어,\" 그가 말했다." },
-        { en: "\"You have a responsibility to return it. It is your duty!\"", ko: "\"너는 그것을 돌려줄 책임이 있어. 그건 너의 의무야!\"" },
-        { en: "I asked, \"Haven't you ever heard the saying, 'finders keepers, losers weepers'? I have rights. I found it, so I am claiming it.\"", ko: "나는 물었다, \"'먼저 주운 사람이 임자'라는 말도 못 들어봤어? 나도 권리가 있어. 내가 찾았으니 내 소유를 주장하는 거야.\"" },
-        { en: "\"You can do whatever you want, Wyatt, but you know it's wrong to keep it,\" Paul said.", ko: "\"네가 원하는 대로 할 수는 있겠지만, 와이엇, 그걸 가지는 건 잘못된 일이라는 걸 너도 알잖아,\" 폴이 말했다." },
-        { en: "Then he added, \"Whenever there are issues like this at school, you're the one who helps solve the problems. Now you aren't taking your own advice.\"", ko: "그러고는 덧붙였다, \"학교에서 이런 문제가 생길 때마다 해결하도록 도와주는 사람이 바로 너잖아. 지금은 네가 네 자신의 조언을 따르지 않고 있어.\"" },
-        { en: "Then Paul added, \"I volunteered my thoughts. If you don't want to take the help I offered, there's nothing I can do.\"", ko: "그리고 폴이 덧붙였다, \"난 내 생각을 자발적으로 말해준 거야. 내가 건넨 도움을 받기 싫다면 내가 할 수 있는 일은 없어.\"" },
-        { en: "Paul was right.", ko: "폴의 말이 맞았다." },
-        { en: "I couldn't keep the game because it wasn't mine.", ko: "내 것이 아니었기 때문에 그 게임기를 가질 수 없었다." },
-        { en: "The person who lost it would be upset.", ko: "그것을 잃어버린 사람은 속상해할 것이다." },
-        { en: "I cleared my throat and said in my best deep voice, \"I've determined that you're right!\"", ko: "나는 헛기침을 하고 최대한 굵은 목소리로 말했다, \"네 말이 맞다고 결론 내렸어!\"" },
-        { en: "\"I'm delighted you decided to do the right thing,\" said Paul.", ko: "\"네가 옳은 일을 하기로 결정해서 기뻐,\" 폴이 말했다." },
-        { en: "We told my mother what happened.", ko: "우리는 엄마에게 무슨 일이 있었는지 말씀드렸다." },
-        { en: "She walked around the park with us so we could try to find the owner of the game.", ko: "엄마는 우리가 게임기 주인을 찾을 수 있도록 우리와 함께 공원을 돌아다니셨다." },
-        { en: "Soon we saw a boy and his mom looking for something.", ko: "곧 우리는 무언가를 찾고 있는 한 남자아이와 그 엄마를 보았다." },
-        { en: "He looked hopeless, and he burst into tears when we asked him if the game was his.", ko: "아이는 절망적으로 보였고, 우리가 게임기가 자기 것인지 묻자 울음을 터뜨렸다." },
-        { en: "\"Yes,\" he wailed, \"I lost my GameMaster a little while ago. I should have been more careful!\"", ko: "\"맞아요,\" 아이가 울부짖었다, \"조금 전에 게임마스터를 잃어버렸어요. 더 조심했어야 했는데!\"" },
-        { en: "Afterward, Mom and I walked home.", ko: "그 후, 엄마와 나는 집으로 걸어갔다." },
-        { en: "I was glad I returned the toy to the boy.", ko: "나는 그 남자아이에게 장난감을 돌려주어서 기뻤다." },
-        { en: "So I made a promise to myself to always try to do the right thing.", ko: "그래서 나는 항상 옳은 일을 하려고 노력하겠다고 스스로에게 약속했다." },
-        { en: "Now that is a vow I can keep!", ko: "이제 그것은 내가 지킬 수 있는 맹세다!" }
+        { en: "It was a bright and sunny Saturday morning.", ko: "화창하고 맑은 토요일 아침이었어요." },
+        { en: "Mia put on her favorite sneakers and stepped outside.", ko: "미아는 가장 좋아하는 운동화를 신고 밖으로 나갔어요." },
+        { en: "A gentle breeze blew through the green trees in the park.", ko: "공원의 푸른 나무들 사이로 산들바람이 불어왔어요." },
+        { en: "She heard happy birds singing high up in the branches.", ko: "그녀는 높은 나뭇가지 위에서 즐겁게 노래하는 새소리를 들었어요." },
+        { en: "Along the path, a small brown puppy wagged its tail at her.", ko: "산책로를 따라 작은 갈색 강아지가 그녀를 향해 꼬리를 흔들었어요." },
+        { en: "Mia smiled and thought it was the best way to start the weekend.", ko: "미아는 미소를 지으며 주말을 시작하는 가장 좋은 방법이라고 생각했어요." }
       ]
     };
 
-    const STORAGE_KEY_PASSAGES = "english_shadowing_custom_passages_v1";
-    const STORAGE_KEY_ACTIVE = "english_shadowing_active_passage_v1";
+    const STORAGE_KEY_PASSAGES = "english_shadowing_passages_v2";
+    const STORAGE_KEY_ACTIVE = "english_shadowing_active_id_v2";
+    const STORAGE_KEY_GH_CONFIG = "english_shadowing_gh_config_v1";
 
     // =========================================================================
     // 2. 앱 상태 관리
     // =========================================================================
     const state = {
-      passages: [],              // [PRESET_PASSAGE, ...customPassages]
-      activePassageId: PRESET_PASSAGE.id,
-      editingPassageId: null,    // 모달에서 편집 중인 지문 ID (null이면 새로 추가)
+      passages: [],
+      activePassageId: DEFAULT_SAMPLE_PASSAGE.id,
+      editingPassageId: null,
       currentIndex: 0,
       isPlaying: false,
       isPaused: false,
@@ -513,7 +681,17 @@
       currentUtterance: null,
       pauseTimerId: null,
       countdownIntervalId: null,
-      toastTimerId: null
+      toastTimerId: null,
+      // GitHub 동기화 설정
+      ghConfig: {
+        owner: "",
+        repo: "",
+        branch: "main",
+        filePath: "passages.json",
+        token: ""
+      },
+      autoDetectedRepo: false,
+      syncStatus: "local" // "local" | "readonly" | "synced" | "syncing" | "error"
     };
 
     // =========================================================================
@@ -521,6 +699,11 @@
     // =========================================================================
     const els = {
       headerTitle: document.getElementById("headerTitle"),
+      openSyncModalBtn: document.getElementById("openSyncModalBtn"),
+      syncStatusDot: document.getElementById("syncStatusDot"),
+      syncStatusLabel: document.getElementById("syncStatusLabel"),
+      refreshSyncBtn: document.getElementById("refreshSyncBtn"),
+      refreshIcon: document.getElementById("refreshIcon"),
       headerTranslationBtn: document.getElementById("headerTranslationBtn"),
       headerTranslationLabel: document.getElementById("headerTranslationLabel"),
       openAddModalBtn: document.getElementById("openAddModalBtn"),
@@ -557,16 +740,34 @@
       countdownDisplay: document.getElementById("countdownDisplay"),
       countdownSeconds: document.getElementById("countdownSeconds"),
       pauseProgressBar: document.getElementById("pauseProgressBar"),
-      // 추가/편집 모달
+      // 지문 추가/편집 모달
       passageModal: document.getElementById("passageModal"),
       modalTitle: document.getElementById("modalTitle"),
       closeModalBtn: document.getElementById("closeModalBtn"),
       cancelModalBtn: document.getElementById("cancelModalBtn"),
       savePassageBtn: document.getElementById("savePassageBtn"),
+      savePassageBtnText: document.getElementById("savePassageBtnText"),
       inputPassageTitle: document.getElementById("inputPassageTitle"),
-      inputPassageContent: document.getElementById("inputPassageContent"),
-      previewCountBadge: document.getElementById("previewCountBadge"),
+      inputPassageEn: document.getElementById("inputPassageEn"),
+      inputPassageKo: document.getElementById("inputPassageKo"),
+      previewEnCount: document.getElementById("previewEnCount"),
+      previewKoCount: document.getElementById("previewKoCount"),
+      modalSyncHintText: document.getElementById("modalSyncHintText"),
       modalErrorMsg: document.getElementById("modalErrorMsg"),
+      // GitHub 동기화 모달
+      syncModal: document.getElementById("syncModal"),
+      closeSyncModalBtn: document.getElementById("closeSyncModalBtn"),
+      autoDetectBanner: document.getElementById("autoDetectBanner"),
+      ghOwner: document.getElementById("ghOwner"),
+      ghRepo: document.getElementById("ghRepo"),
+      ghBranch: document.getElementById("ghBranch"),
+      ghFilePath: document.getElementById("ghFilePath"),
+      ghToken: document.getElementById("ghToken"),
+      toggleTokenVisibilityBtn: document.getElementById("toggleTokenVisibilityBtn"),
+      syncModalFeedback: document.getElementById("syncModalFeedback"),
+      resetTokenBtn: document.getElementById("resetTokenBtn"),
+      testSyncBtn: document.getElementById("testSyncBtn"),
+      saveSyncSettingsBtn: document.getElementById("saveSyncSettingsBtn"),
       // 삭제 확인 모달
       deleteModal: document.getElementById("deleteModal"),
       deleteTargetName: document.getElementById("deleteTargetName"),
@@ -577,9 +778,337 @@
     };
 
     // =========================================================================
-    // 4. LocalStorage 저장/로드 및 지문 파싱 유틸리티
+    // 4. UTF-8 안전한 Base64 인코딩/디코딩 및 유틸리티
     // =========================================================================
-    function loadPassagesFromStorage() {
+    function utf8ToBase64(str) {
+      const bytes = new TextEncoder().encode(str);
+      let binary = "";
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
+    }
+
+    function base64ToUtf8(base64) {
+      const clean = base64.replace(/\s/g, "");
+      const binary = atob(clean);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new TextDecoder("utf-8").decode(bytes);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function showToast(message, duration = 3000) {
+      if (state.toastTimerId) clearTimeout(state.toastTimerId);
+      els.toast.textContent = message;
+      els.toast.classList.remove("hidden");
+      state.toastTimerId = setTimeout(() => {
+        els.toast.classList.add("hidden");
+      }, duration);
+    }
+
+    // =========================================================================
+    // 5. GitHub Pages 자동 감지 & GitHub Contents API 동기화
+    // =========================================================================
+    function detectGitHubPagesRepo() {
+      const hostname = window.location.hostname || "";
+      if (hostname.endsWith(".github.io")) {
+        const owner = hostname.slice(0, -".github.io".length);
+        const pathParts = (window.location.pathname || "").split("/").filter(Boolean);
+        const repo = pathParts.length > 0 ? pathParts[0] : `${owner}.github.io`;
+        return { owner, repo };
+      }
+      return null;
+    }
+
+    function loadGitHubConfig() {
+      const detected = detectGitHubPagesRepo();
+      let saved = {};
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_GH_CONFIG);
+        if (raw) saved = JSON.parse(raw) || {};
+      } catch (err) {
+        console.error("GitHub 설정 로드 오류:", err);
+      }
+
+      if (detected) {
+        state.autoDetectedRepo = true;
+      }
+
+      state.ghConfig = {
+        owner: (saved.owner || (detected ? detected.owner : "")).trim(),
+        repo: (saved.repo || (detected ? detected.repo : "")).trim(),
+        branch: (saved.branch || "main").trim(),
+        filePath: (saved.filePath || "passages.json").trim(),
+        token: (saved.token || "").trim()
+      };
+
+      refreshSyncStatusBadge();
+    }
+
+    function saveGitHubConfig() {
+      try {
+        localStorage.setItem(STORAGE_KEY_GH_CONFIG, JSON.stringify(state.ghConfig));
+      } catch (err) {
+        console.error("GitHub 설정 저장 오류:", err);
+      }
+      refreshSyncStatusBadge();
+    }
+
+    function hasRepoTarget() {
+      return Boolean(state.ghConfig.owner && state.ghConfig.repo);
+    }
+
+    function canWriteToGitHub() {
+      return Boolean(state.ghConfig.owner && state.ghConfig.repo && state.ghConfig.token);
+    }
+
+    function updateSyncStatusBadge(status) {
+      state.syncStatus = status;
+      const dot = els.syncStatusDot;
+      const label = els.syncStatusLabel;
+      const btn = els.openSyncModalBtn;
+
+      if (status === "syncing") {
+        dot.className = "w-2 h-2 rounded-full bg-indigo-500 animate-pulse shrink-0";
+        label.textContent = "동기화 중...";
+        btn.className = "inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-indigo-50 text-indigo-700 border-indigo-200";
+      } else if (status === "synced") {
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500 shrink-0";
+        label.textContent = "GitHub 동기화됨";
+        btn.className = "inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100";
+      } else if (status === "readonly") {
+        dot.className = "w-2 h-2 rounded-full bg-sky-500 shrink-0";
+        label.textContent = "읽기 전용";
+        btn.className = "inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100";
+      } else if (status === "error") {
+        dot.className = "w-2 h-2 rounded-full bg-rose-500 shrink-0";
+        label.textContent = "동기화 오류";
+        btn.className = "inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100";
+      } else {
+        dot.className = "w-2 h-2 rounded-full bg-slate-400 shrink-0";
+        label.textContent = "로컬 모드";
+        btn.className = "inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100";
+      }
+    }
+
+    function refreshSyncStatusBadge() {
+      if (canWriteToGitHub()) {
+        updateSyncStatusBadge("synced");
+      } else if (hasRepoTarget()) {
+        updateSyncStatusBadge("readonly");
+      } else {
+        updateSyncStatusBadge("local");
+      }
+    }
+
+    function buildGitHubHeaders(includeAuth = true) {
+      const headers = {
+        "Accept": "application/vnd.github+json"
+      };
+      if (includeAuth && state.ghConfig.token) {
+        headers["Authorization"] = `Bearer ${state.ghConfig.token}`;
+      }
+      return headers;
+    }
+
+    /**
+     * GitHub 저장소에서 passages.json 불러오기 (Public 저장소는 토큰 없이도 동작)
+     */
+    async function fetchPassagesFromGitHub({ silent = false } = {}) {
+      if (!hasRepoTarget()) {
+        if (!silent) showToast("GitHub 저장소 정보가 설정되지 않았습니다.");
+        return { ok: false, reason: "no-config" };
+      }
+
+      const { owner, repo, branch, filePath } = state.ghConfig;
+      const encodedPath = filePath.split("/").map(encodeURIComponent).join("/");
+      const url = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodedPath}?ref=${encodeURIComponent(branch)}&t=${Date.now()}`;
+
+      updateSyncStatusBadge("syncing");
+      els.refreshIcon.classList.add("animate-spin");
+
+      try {
+        const res = await fetch(url, {
+          method: "GET",
+          headers: buildGitHubHeaders(true),
+          cache: "no-store"
+        });
+
+        if (res.status === 404) {
+          // 파일이 아직 생성되지 않은 초기 상태는 정상 처리
+          refreshSyncStatusBadge();
+          if (!silent) {
+            showToast(`저장소에 아직 ${filePath} 파일이 없습니다. 새 지문을 추가하면 자동 생성됩니다.`);
+          }
+          return { ok: true, notFound: true, count: 0 };
+        }
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          const msg = res.status === 401
+            ? "GitHub 토큰이 유효하지 않습니다. 설정을 확인해 주세요."
+            : res.status === 403
+            ? "접근 권한이 없거나 API 요청 한도를 초과했습니다."
+            : `GitHub 불러오기 실패 (${res.status}): ${errData.message || "알 수 없는 오류"}`;
+          updateSyncStatusBadge("error");
+          if (!silent) showToast(msg, 4000);
+          return { ok: false, message: msg };
+        }
+
+        const data = await res.json();
+        if (!data.content) {
+          refreshSyncStatusBadge();
+          return { ok: false, message: "파일 내용을 읽을 수 없습니다." };
+        }
+
+        const decodedText = base64ToUtf8(data.content);
+        const parsed = JSON.parse(decodedText);
+
+        if (!Array.isArray(parsed)) {
+          throw new Error("passages.json 형식이 올바른 배열이 아닙니다.");
+        }
+
+        const sanitized = parsed
+          .filter(p => p && p.title && Array.isArray(p.sentences) && p.sentences.length > 0)
+          .map(p => ({
+            id: p.id || `gh-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+            title: String(p.title),
+            isPreset: false,
+            sentences: p.sentences.map(s => ({
+              en: String(s.en || "").trim(),
+              ko: String(s.ko || "").trim()
+            })).filter(s => s.en)
+          }))
+          .filter(p => p.sentences.length > 0);
+
+        state.passages = [DEFAULT_SAMPLE_PASSAGE, ...sanitized];
+        if (!state.passages.some(p => p.id === state.activePassageId)) {
+          state.activePassageId = sanitized.length > 0 ? sanitized[0].id : DEFAULT_SAMPLE_PASSAGE.id;
+        }
+
+        saveCustomPassagesToLocalStorage();
+        renderPassageSelector();
+        renderSentences();
+        refreshSyncStatusBadge();
+
+        if (!silent) {
+          showToast(`GitHub에서 지문 ${sanitized.length}개를 불러왔습니다!`);
+        }
+        return { ok: true, count: sanitized.length };
+      } catch (err) {
+        console.error("GitHub 불러오기 오류:", err);
+        updateSyncStatusBadge("error");
+        const msg = `동기화 중 오류가 발생했습니다: ${err.message}`;
+        if (!silent) showToast(msg, 4000);
+        return { ok: false, message: msg };
+      } finally {
+        els.refreshIcon.classList.remove("animate-spin");
+      }
+    }
+
+    /**
+     * 현재 커스텀 지문 목록을 GitHub passages.json에 커밋(PUT)
+     */
+    async function pushPassagesToGitHub(commitMessage = "Update passages.json") {
+      if (!canWriteToGitHub()) {
+        return { ok: false, skipped: true };
+      }
+
+      const { owner, repo, branch, filePath } = state.ghConfig;
+      const encodedPath = filePath.split("/").map(encodeURIComponent).join("/");
+      const baseUrl = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodedPath}`;
+
+      updateSyncStatusBadge("syncing");
+
+      try {
+        // 1) 최신 SHA 조회 (기존 파일이 있으면 업데이트, 404면 신규 생성)
+        let existingSha = undefined;
+        const getRes = await fetch(`${baseUrl}?ref=${encodeURIComponent(branch)}&t=${Date.now()}`, {
+          method: "GET",
+          headers: buildGitHubHeaders(true),
+          cache: "no-store"
+        });
+
+        if (getRes.ok) {
+          const existingData = await getRes.json();
+          existingSha = existingData.sha;
+        } else if (getRes.status !== 404) {
+          const errData = await getRes.json().catch(() => ({}));
+          throw new Error(
+            getRes.status === 401
+              ? "토큰이 유효하지 않습니다. GitHub 동기화 설정에서 토큰을 확인해 주세요."
+              : getRes.status === 403
+              ? "토큰에 Contents 읽기/쓰기 권한이 없습니다."
+              : `SHA 조회 실패 (${getRes.status}): ${errData.message || ""}`
+          );
+        }
+
+        // 2) 커스텀 지문만 JSON으로 직렬화 후 UTF-8 안전 Base64 인코딩
+        const customPassages = state.passages
+          .filter(p => !p.isPreset)
+          .map(p => ({
+            id: p.id,
+            title: p.title,
+            sentences: p.sentences
+          }));
+
+        const jsonContent = JSON.stringify(customPassages, null, 2);
+        const bodyPayload = {
+          message: commitMessage,
+          content: utf8ToBase64(jsonContent),
+          branch
+        };
+        if (existingSha) {
+          bodyPayload.sha = existingSha;
+        }
+
+        // 3) PUT 요청으로 커밋
+        const putRes = await fetch(baseUrl, {
+          method: "PUT",
+          headers: {
+            ...buildGitHubHeaders(true),
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(bodyPayload)
+        });
+
+        if (!putRes.ok) {
+          const errData = await putRes.json().catch(() => ({}));
+          const msg = putRes.status === 401
+            ? "토큰 인증에 실패했습니다. 새 토큰을 확인해 주세요."
+            : putRes.status === 403
+            ? "저장 권한이 없습니다. 토큰 설정에서 Contents: Read and write 권한을 켜주세요."
+            : putRes.status === 404
+            ? "저장소 또는 브랜치 이름을 찾을 수 없습니다."
+            : `GitHub 저장 실패 (${putRes.status}): ${errData.message || "알 수 없는 오류"}`;
+          throw new Error(msg);
+        }
+
+        refreshSyncStatusBadge();
+        showToast("GitHub에 저장되었습니다! 다른 기기에서도 바로 볼 수 있어요.", 3500);
+        return { ok: true };
+      } catch (err) {
+        console.error("GitHub 저장 오류:", err);
+        updateSyncStatusBadge("error");
+        showToast(`로컬엔 저장됐지만 GitHub 업로드 실패: ${err.message}`, 4800);
+        return { ok: false, message: err.message };
+      }
+    }
+
+    // =========================================================================
+    // 6. LocalStorage 관리 및 문장 자동 분리 파서
+    // =========================================================================
+    function loadPassagesFromLocalStorage() {
       let customPassages = [];
       try {
         const saved = localStorage.getItem(STORAGE_KEY_PASSAGES);
@@ -590,7 +1119,8 @@
       } catch (err) {
         console.error("LocalStorage 로드 오류:", err);
       }
-      state.passages = [PRESET_PASSAGE, ...customPassages];
+
+      state.passages = [DEFAULT_SAMPLE_PASSAGE, ...customPassages];
 
       try {
         const savedActiveId = localStorage.getItem(STORAGE_KEY_ACTIVE);
@@ -602,7 +1132,7 @@
       }
     }
 
-    function saveCustomPassagesToStorage() {
+    function saveCustomPassagesToLocalStorage() {
       const customOnly = state.passages.filter(p => !p.isPreset);
       try {
         localStorage.setItem(STORAGE_KEY_PASSAGES, JSON.stringify(customOnly));
@@ -613,74 +1143,48 @@
     }
 
     function getActivePassage() {
-      return state.passages.find(p => p.id === state.activePassageId) || PRESET_PASSAGE;
+      return state.passages.find(p => p.id === state.activePassageId) || DEFAULT_SAMPLE_PASSAGE;
     }
 
     /**
-     * 입력 텍스트를 문장 배열 [{ en, ko }]로 지능형 파싱
-     * - '|' 기호가 포함된 줄이 있으면 줄 단위 '영어 | 해석' 파싱
-     * - 일반 영어 문단이면 약어 및 따옴표를 고려해 문장 단위로 자동 분리
+     * 영어 문단/줄바꿈 텍스트를 자연스러운 문장 배열로 분리
+     * - Mr., Mrs., Ms., Dr., Prof., St. 등 약어 마침표 보호
+     * - ." ?" !" 등 닫는 따옴표가 문장 끝에 자연스럽게 붙도록 처리
      */
-    function parsePassageInput(rawText) {
+    function splitEnglishSentences(rawText) {
       const trimmed = rawText.trim();
       if (!trimmed) return [];
 
       const lines = trimmed.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-      const hasPipeFormat = lines.some(line => line.includes("|"));
+      const abbrevRegex = /\b(Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|vs|etc|e\.g|i\.e|a\.m|p\.m)\./gi;
+      const sentences = [];
 
-      if (hasPipeFormat) {
-        return lines.map(line => {
-          const idx = line.indexOf("|");
-          if (idx === -1) {
-            return { en: line, ko: "" };
-          }
-          const en = line.slice(0, idx).trim();
-          const ko = line.slice(idx + 1).trim();
-          return { en, ko };
-        }).filter(item => item.en.length > 0);
-      }
-
-      // 일반 영어 문단 자동 문장 분리 (약어 보호 + 따옴표 존중)
-      const abbrevRegex = /\b(Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|vs|etc|e\.g|i\.e)\./gi;
-      const result = [];
-
-      lines.forEach(paragraph => {
-        // 1) 약어의 마침표를 임시 토큰으로 보호
-        const protectedText = paragraph.replace(abbrevRegex, (match) => match.slice(0, -1) + "∯");
-
-        // 2) 문장 종결 부호(. ! ?) + 선택적 닫는 따옴표(" ' ” ’) + 공백 기준으로 분리
-        const rawSentences = protectedText.match(/[^.!?]+(?:[.!?]+["'”’\)\]]*|$)/g) || [protectedText];
-
-        rawSentences.forEach(s => {
-          const restored = s.replace(/∯/g, ".").trim();
-          if (restored) {
-            result.push({ en: restored, ko: "" });
-          }
+      lines.forEach(line => {
+        const protectedLine = line.replace(abbrevRegex, match => match.slice(0, -1) + "∯");
+        const matches = protectedLine.match(/[^.!?]+(?:[.!?]+["'”’\)\]]*|$)/g) || [protectedLine];
+        matches.forEach(part => {
+          const restored = part.replace(/∯/g, ".").trim();
+          if (restored) sentences.push(restored);
         });
       });
 
-      return result;
+      return sentences;
     }
 
-    function showToast(message) {
-      if (state.toastTimerId) clearTimeout(state.toastTimerId);
-      els.toast.textContent = message;
-      els.toast.classList.remove("hidden");
-      state.toastTimerId = setTimeout(() => {
-        els.toast.classList.add("hidden");
-      }, 2400);
-    }
+    function combineEnAndKo(rawEn, rawKo) {
+      const enList = splitEnglishSentences(rawEn);
+      const koList = rawKo.trim()
+        ? rawKo.split(/\r?\n/).map(l => l.trim())
+        : [];
 
-    function escapeHtml(str) {
-      return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
+      return enList.map((en, idx) => ({
+        en,
+        ko: koList[idx] || ""
+      }));
     }
 
     // =========================================================================
-    // 5. 지문 선택 드롭다운 & 문장 카드 렌더링
+    // 7. 지문 선택 드롭다운 & 문장 카드 렌더링
     // =========================================================================
     function renderPassageSelector() {
       els.passageSelect.innerHTML = "";
@@ -688,7 +1192,7 @@
         const option = document.createElement("option");
         option.value = passage.id;
         option.textContent = passage.isPreset
-          ? `📘 [기본] ${passage.title} (${passage.sentences.length}문장)`
+          ? `📘 [샘플] ${passage.title} (${passage.sentences.length}문장)`
           : `📝 ${passage.title} (${passage.sentences.length}문장)`;
         els.passageSelect.appendChild(option);
       });
@@ -698,7 +1202,6 @@
       els.headerTitle.textContent = active.title;
       els.passageMetaBadge.textContent = `총 ${active.sentences.length}문장`;
 
-      // 기본 프리셋은 편집/삭제 숨김, 커스텀 지문은 표시
       if (active.isPreset) {
         els.customPassageActions.classList.add("hidden");
       } else {
@@ -768,7 +1271,7 @@
       stopPlayback(true);
       state.activePassageId = passageId;
       state.currentIndex = 0;
-      saveCustomPassagesToStorage();
+      saveCustomPassagesToLocalStorage();
       renderPassageSelector();
       renderSentences();
       updateControlsUI("idle");
@@ -776,7 +1279,7 @@
     }
 
     // =========================================================================
-    // 6. Web Speech API 음성 로드
+    // 8. Web Speech API 음성 로드 및 재생 제어
     // =========================================================================
     function loadVoices() {
       if (!("speechSynthesis" in window)) {
@@ -828,9 +1331,6 @@
       }
     }
 
-    // =========================================================================
-    // 7. 재생 / 일시정지 / 정지 / 카운트다운 핵심 로직
-    // =========================================================================
     function clearTimers() {
       if (state.pauseTimerId) {
         clearTimeout(state.pauseTimerId);
@@ -1034,7 +1534,7 @@
     }
 
     // =========================================================================
-    // 8. UI 상태 동기화
+    // 9. UI 상태 업데이트
     // =========================================================================
     function updateActiveCardUI(activeIndex, mode, shouldScroll) {
       const total = getActivePassage().sentences.length;
@@ -1133,10 +1633,10 @@
 
       if (isOn) {
         els.translationToggleBtn.className = "inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100";
-        els.headerTranslationBtn.className = "inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100";
+        els.headerTranslationBtn.className = "hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100";
       } else {
         els.translationToggleBtn.className = "inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
-        els.headerTranslationBtn.className = "inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all bg-white text-slate-500 border-slate-200 hover:bg-slate-50";
+        els.headerTranslationBtn.className = "hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-white text-slate-500 border-slate-200 hover:bg-slate-50";
       }
 
       document.querySelectorAll(".sentence-ko").forEach(el => {
@@ -1145,26 +1645,32 @@
     }
 
     // =========================================================================
-    // 9. 새 지문 추가 / 편집 / 삭제 모달 로직
+    // 10. 지문 추가 / 편집 / 삭제 모달 로직
     // =========================================================================
     function openPassageModal(passageToEdit = null) {
       els.modalErrorMsg.classList.add("hidden");
+
+      if (canWriteToGitHub()) {
+        els.modalSyncHintText.textContent = `저장 시 GitHub (${state.ghConfig.owner}/${state.ghConfig.repo})에 자동 동기화됩니다.`;
+      } else {
+        els.modalSyncHintText.textContent = "현재 브라우저에만 저장됩니다. 상단 [GitHub 동기화]에서 토큰을 설정하면 모든 기기에서 공유됩니다.";
+      }
 
       if (passageToEdit) {
         state.editingPassageId = passageToEdit.id;
         els.modalTitle.textContent = "지문 편집";
         els.inputPassageTitle.value = passageToEdit.title;
-        els.inputPassageContent.value = passageToEdit.sentences
-          .map(s => (s.ko ? `${s.en} | ${s.ko}` : s.en))
-          .join("\n");
+        els.inputPassageEn.value = passageToEdit.sentences.map(s => s.en).join("\n");
+        els.inputPassageKo.value = passageToEdit.sentences.map(s => s.ko || "").join("\n").trimEnd();
       } else {
         state.editingPassageId = null;
         els.modalTitle.textContent = "새 지문 추가";
         els.inputPassageTitle.value = "";
-        els.inputPassageContent.value = "";
+        els.inputPassageEn.value = "";
+        els.inputPassageKo.value = "";
       }
 
-      updateModalPreviewCount();
+      updateModalPreviewCounts();
       els.passageModal.classList.remove("hidden");
       els.passageModal.classList.add("flex");
       els.inputPassageTitle.focus();
@@ -1175,14 +1681,18 @@
       els.passageModal.classList.remove("flex");
     }
 
-    function updateModalPreviewCount() {
-      const parsed = parsePassageInput(els.inputPassageContent.value);
-      els.previewCountBadge.textContent = `${parsed.length}문장 인식됨`;
+    function updateModalPreviewCounts() {
+      const enCount = splitEnglishSentences(els.inputPassageEn.value).length;
+      const koLines = els.inputPassageKo.value.trim()
+        ? els.inputPassageKo.value.split(/\r?\n/).filter(l => l.trim()).length
+        : 0;
+      els.previewEnCount.textContent = `${enCount}문장 인식됨`;
+      els.previewKoCount.textContent = `${koLines}줄`;
     }
 
-    function handleSavePassage() {
+    async function handleSavePassage() {
       const title = els.inputPassageTitle.value.trim();
-      const sentences = parsePassageInput(els.inputPassageContent.value);
+      const sentences = combineEnAndKo(els.inputPassageEn.value, els.inputPassageKo.value);
 
       if (!title) {
         els.modalErrorMsg.textContent = "지문 제목을 입력해 주세요.";
@@ -1194,9 +1704,12 @@
       if (sentences.length === 0) {
         els.modalErrorMsg.textContent = "영어 문장을 1개 이상 입력해 주세요.";
         els.modalErrorMsg.classList.remove("hidden");
-        els.inputPassageContent.focus();
+        els.inputPassageEn.focus();
         return;
       }
+
+      let targetId;
+      let actionLabel;
 
       if (state.editingPassageId) {
         const target = state.passages.find(p => p.id === state.editingPassageId);
@@ -1204,10 +1717,8 @@
           target.title = title;
           target.sentences = sentences;
         }
-        saveCustomPassagesToStorage();
-        closePassageModal();
-        switchPassage(state.editingPassageId);
-        showToast("지문이 수정되었습니다.");
+        targetId = state.editingPassageId;
+        actionLabel = `Edit passage: ${title}`;
       } else {
         const newPassage = {
           id: "custom-" + Date.now(),
@@ -1216,17 +1727,27 @@
           sentences
         };
         state.passages.push(newPassage);
-        saveCustomPassagesToStorage();
-        closePassageModal();
-        switchPassage(newPassage.id);
-        showToast("새 지문이 저장되었습니다.");
+        targetId = newPassage.id;
+        actionLabel = `Add passage: ${title}`;
+      }
+
+      saveCustomPassagesToLocalStorage();
+      closePassageModal();
+      switchPassage(targetId);
+
+      if (canWriteToGitHub()) {
+        await pushPassagesToGitHub(actionLabel);
+      } else {
+        showToast(state.editingPassageId ? "지문이 수정되었습니다. (로컬 저장)" : "새 지문이 저장되었습니다. (로컬 저장)");
       }
     }
 
     function openDeleteModal() {
       const active = getActivePassage();
       if (active.isPreset) return;
-      els.deleteTargetName.textContent = `"${active.title}" 지문이 브라우저에서 영구 삭제됩니다.`;
+      els.deleteTargetName.textContent = canWriteToGitHub()
+        ? `"${active.title}" 지문이 이 기기와 GitHub 저장소에서 모두 삭제됩니다.`
+        : `"${active.title}" 지문이 이 브라우저에서 삭제됩니다.`;
       els.deleteModal.classList.remove("hidden");
       els.deleteModal.classList.add("flex");
     }
@@ -1236,22 +1757,134 @@
       els.deleteModal.classList.remove("flex");
     }
 
-    function handleConfirmDelete() {
-      const targetId = state.activePassageId;
-      state.passages = state.passages.filter(p => p.id !== targetId);
+    async function handleConfirmDelete() {
+      const active = getActivePassage();
+      if (!active || active.isPreset) return;
+
+      const deletedTitle = active.title;
+      state.passages = state.passages.filter(p => p.id !== active.id);
       closeDeleteModal();
-      switchPassage(PRESET_PASSAGE.id);
-      showToast("지문이 삭제되었습니다.");
+      switchPassage(DEFAULT_SAMPLE_PASSAGE.id);
+
+      if (canWriteToGitHub()) {
+        await pushPassagesToGitHub(`Delete passage: ${deletedTitle}`);
+      } else {
+        showToast("지문이 삭제되었습니다.");
+      }
     }
 
     // =========================================================================
-    // 10. 이벤트 바인딩 및 초기화
+    // 11. GitHub 동기화 설정 모달 로직
+    // =========================================================================
+    function openSyncModal() {
+      els.ghOwner.value = state.ghConfig.owner;
+      els.ghRepo.value = state.ghConfig.repo;
+      els.ghBranch.value = state.ghConfig.branch || "main";
+      els.ghFilePath.value = state.ghConfig.filePath || "passages.json";
+      els.ghToken.value = state.ghConfig.token;
+      els.ghToken.type = "password";
+
+      els.autoDetectBanner.classList.toggle("hidden", !state.autoDetectedRepo);
+      els.syncModalFeedback.classList.add("hidden");
+
+      els.syncModal.classList.remove("hidden");
+      els.syncModal.classList.add("flex");
+    }
+
+    function closeSyncModal() {
+      els.syncModal.classList.add("hidden");
+      els.syncModal.classList.remove("flex");
+    }
+
+    function showSyncModalFeedback(message, isError = false) {
+      els.syncModalFeedback.textContent = message;
+      els.syncModalFeedback.className = isError
+        ? "rounded-xl px-3.5 py-2.5 text-xs font-medium bg-rose-50 text-rose-700 border border-rose-100"
+        : "rounded-xl px-3.5 py-2.5 text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100";
+      els.syncModalFeedback.classList.remove("hidden");
+    }
+
+    function applySyncFormToState() {
+      state.ghConfig = {
+        owner: els.ghOwner.value.trim(),
+        repo: els.ghRepo.value.trim(),
+        branch: els.ghBranch.value.trim() || "main",
+        filePath: els.ghFilePath.value.trim() || "passages.json",
+        token: els.ghToken.value.trim()
+      };
+      saveGitHubConfig();
+    }
+
+    async function handleTestAndFetchSync() {
+      applySyncFormToState();
+      if (!hasRepoTarget()) {
+        showSyncModalFeedback("GitHub 사용자명(Owner)과 저장소 이름(Repo)을 입력해 주세요.", true);
+        return;
+      }
+
+      showSyncModalFeedback("GitHub 저장소에 연결 중입니다...", false);
+      const result = await fetchPassagesFromGitHub({ silent: true });
+
+      if (result.ok) {
+        if (result.notFound) {
+          const customCount = state.passages.filter(p => !p.isPreset).length;
+          if (canWriteToGitHub() && customCount > 0) {
+            showSyncModalFeedback(`연결 성공! 저장소에 파일이 없어 로컬 지문 ${customCount}개를 업로드합니다...`, false);
+            const pushRes = await pushPassagesToGitHub("Initial sync of passages.json");
+            if (pushRes.ok) {
+              showSyncModalFeedback(`연결 성공! 로컬 지문 ${customCount}개를 GitHub에 업로드했습니다.`, false);
+            } else {
+              showSyncModalFeedback(pushRes.message || "업로드에 실패했습니다.", true);
+            }
+          } else {
+            showSyncModalFeedback(`연결 성공! 아직 ${state.ghConfig.filePath} 파일이 없습니다. 새 지문을 추가하면 자동으로 생성됩니다.`, false);
+          }
+        } else {
+          showSyncModalFeedback(`연결 성공! GitHub에서 지문 ${result.count}개를 불러왔습니다.`, false);
+        }
+      } else {
+        showSyncModalFeedback(result.message || "연결에 실패했습니다.", true);
+      }
+    }
+
+    async function handleSaveSyncSettings() {
+      applySyncFormToState();
+      closeSyncModal();
+
+      if (hasRepoTarget()) {
+        const result = await fetchPassagesFromGitHub({ silent: true });
+        if (result.ok && !result.notFound) {
+          showToast(`설정이 저장되었습니다. (GitHub 지문 ${result.count}개 동기화)`);
+        } else if (result.ok && result.notFound) {
+          const customCount = state.passages.filter(p => !p.isPreset).length;
+          if (canWriteToGitHub() && customCount > 0) {
+            await pushPassagesToGitHub("Initial sync of passages.json");
+          } else {
+            showToast("GitHub 동기화 설정이 저장되었습니다.");
+          }
+        } else {
+          showToast(result.message || "설정은 저장되었으나 연결 확인에 실패했습니다.", 4000);
+        }
+      } else {
+        showToast("로컬 모드로 설정되었습니다.");
+      }
+    }
+
+    function handleResetToken() {
+      els.ghToken.value = "";
+      state.ghConfig.token = "";
+      saveGitHubConfig();
+      showSyncModalFeedback("토큰이 초기화되었습니다. 이제 읽기 전용(또는 로컬) 모드로 동작합니다.", false);
+    }
+
+    // =========================================================================
+    // 12. 이벤트 바인딩 및 앱 초기화
     // =========================================================================
     function bindEvents() {
-      els.passageSelect.addEventListener("change", (e) => {
-        switchPassage(e.target.value);
-      });
+      // 지문 선택
+      els.passageSelect.addEventListener("change", (e) => switchPassage(e.target.value));
 
+      // 지문 추가/편집/삭제
       els.openAddModalBtn.addEventListener("click", () => openPassageModal(null));
       els.editPassageBtn.addEventListener("click", () => {
         const active = getActivePassage();
@@ -1262,19 +1895,35 @@
       els.closeModalBtn.addEventListener("click", closePassageModal);
       els.cancelModalBtn.addEventListener("click", closePassageModal);
       els.savePassageBtn.addEventListener("click", handleSavePassage);
-      els.inputPassageContent.addEventListener("input", updateModalPreviewCount);
+      els.inputPassageEn.addEventListener("input", updateModalPreviewCounts);
+      els.inputPassageKo.addEventListener("input", updateModalPreviewCounts);
 
-      // 모달 바깥 영역 클릭 시 닫기
+      els.cancelDeleteBtn.addEventListener("click", closeDeleteModal);
+      els.confirmDeleteBtn.addEventListener("click", handleConfirmDelete);
+
+      // GitHub 동기화 모달 & 새로고침
+      els.openSyncModalBtn.addEventListener("click", openSyncModal);
+      els.closeSyncModalBtn.addEventListener("click", closeSyncModal);
+      els.refreshSyncBtn.addEventListener("click", () => fetchPassagesFromGitHub({ silent: false }));
+      els.testSyncBtn.addEventListener("click", handleTestAndFetchSync);
+      els.saveSyncSettingsBtn.addEventListener("click", handleSaveSyncSettings);
+      els.resetTokenBtn.addEventListener("click", handleResetToken);
+      els.toggleTokenVisibilityBtn.addEventListener("click", () => {
+        els.ghToken.type = els.ghToken.type === "password" ? "text" : "password";
+      });
+
+      // 모달 바깥 클릭 시 닫기
       els.passageModal.addEventListener("click", (e) => {
         if (e.target === els.passageModal) closePassageModal();
+      });
+      els.syncModal.addEventListener("click", (e) => {
+        if (e.target === els.syncModal) closeSyncModal();
       });
       els.deleteModal.addEventListener("click", (e) => {
         if (e.target === els.deleteModal) closeDeleteModal();
       });
 
-      els.cancelDeleteBtn.addEventListener("click", closeDeleteModal);
-      els.confirmDeleteBtn.addEventListener("click", handleConfirmDelete);
-
+      // 음성 & 슬라이더 설정
       els.voiceSelect.addEventListener("change", (e) => {
         state.selectedVoiceURI = e.target.value;
         if (state.isPlaying) speakSentence(state.currentIndex, false);
@@ -1306,6 +1955,7 @@
       els.translationToggleBtn.addEventListener("click", toggleTranslation);
       els.headerTranslationBtn.addEventListener("click", toggleTranslation);
 
+      // 재생 컨트롤 바
       els.playPauseBtn.addEventListener("click", togglePlayPause);
       els.stopBtn.addEventListener("click", () => stopPlayback(true));
       els.prevBtn.addEventListener("click", playPrev);
@@ -1317,8 +1967,9 @@
       }
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      loadPassagesFromStorage();
+    document.addEventListener("DOMContentLoaded", async () => {
+      loadGitHubConfig();
+      loadPassagesFromLocalStorage();
       renderPassageSelector();
       renderSentences();
       bindEvents();
@@ -1326,6 +1977,11 @@
       updateRepeatUI();
       updateTranslationUI();
       updateControlsUI("idle");
+
+      // GitHub Pages 또는 저장소 설정이 되어 있으면 시작 시 자동으로 최신 지문 불러오기
+      if (hasRepoTarget()) {
+        await fetchPassagesFromGitHub({ silent: true });
+      }
     });
   </script>
 </body>
